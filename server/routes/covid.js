@@ -17,26 +17,39 @@ router.get("/", function(req, res, next) {
     .catch(function(error) {
       // handle error
       res.error(error);
+    });
+ 
+});
+
+router.get("/today", function(req, res, next) {
+  axios
+    .get("https://api.covid19india.org/data.json")
+    .then(function(response) {
+      
+      let stateList = response.data.statewise;
+      
+     const todayList = StateMap.getTodayData(stateList);
+      res.send(todayList);
     })
+    .catch(function(error) {
+      // handle error
+      res.send(error);
+    });
  
 });
 
 router.get("/delta", function(req, res, next) {
   axios
-    .get("https://api.covid19india.org/data.json")
+    .get("http://localhost:3000/covid-data/today")
     .then(function(response) {
-      // handle success
-      console.log(response.data)
-      let stateList = response.data.statewise;
-      
-     const deltaList = StateMap.getDeltaList(stateList);
-     console.log(deltaList.deltaMap);
-      res.send(deltaList);
+     const delta = StateMap.getDelta();
+      res.send(delta);
     })
     .catch(function(error) {
       // handle error
-      res.error(error);
-    })
+      console.log(error);
+      res.send(error);
+    });
  
 });
 
