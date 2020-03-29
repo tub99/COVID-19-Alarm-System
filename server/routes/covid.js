@@ -30,7 +30,7 @@ router.get("/delta", function(req, res, next) {
       let stateList = response.data.statewise;
       
      const deltaList = StateMap.getDeltaList(stateList);
-     console.log(delta.deltaMap);
+     console.log(deltaList.deltaMap);
       res.send(deltaList);
     })
     .catch(function(error) {
