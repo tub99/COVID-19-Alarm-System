@@ -9,7 +9,7 @@ class MapVisualiser extends React.Component {
 
 
     componentDidMount() {
-        
+
         let topoMap = data;
         let states = topojson.feature(topoMap, topoMap.objects.ne_10m_admin_1_India_Official);
 
@@ -23,11 +23,14 @@ class MapVisualiser extends React.Component {
     stateMap(states) {
 
         var width = 800, height = 700, scale = 160;
-        var color = ["#dadaeb", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"]
+        var colors = ["#dadaeb", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"]
 
         function render(selection) {
             selection.each(function () {
 
+                var color = d3.scaleLinear()
+                    .domain([100000, 90000000])
+                    .range(colors);
                 d3.select(this).select("svg").remove();
                 var svg = d3.select(this).append("svg")
                     .attr("width", width)
@@ -44,11 +47,13 @@ class MapVisualiser extends React.Component {
                     .attr("class", "tooltip")
                     .style("opacity", 0);
                 selectState.append("path")
-                    .style("fill", function (d) { return color[Math.floor(Math.random() * 5)]; })
+                    .style("fill", function (d) {
+                        return color(d.properties.population)
+                    })
                     .attr("d", path)
-                    .attr("id",(data)=>{return data.id})
+                    .attr("id", (data) => { return data.id })
                     .on("mouseover", (d) => {
-                        d3.select('#'+d.id).style('stroke','red').style('stroke-width','4');
+                        d3.select('#' + d.id).style('stroke', 'red').style('stroke-width', '4');
                         div.transition()
                             .duration(200)
                             .style("opacity", .9);
@@ -57,7 +62,7 @@ class MapVisualiser extends React.Component {
                             .style("top", (window.event.pageY - 28) + "px");
                     })
                     .on("mouseout", function (d) {
-                        d3.select('#'+d.id).style('stroke','initial').style('stroke-width','0');
+                        d3.select('#' + d.id).style('stroke', 'initial').style('stroke-width', '0');
                         div.transition()
                             .duration(500)
                             .style("opacity", 0);
