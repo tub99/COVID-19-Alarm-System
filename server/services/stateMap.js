@@ -40,7 +40,7 @@ function StateMap(){
             const isConfirmed = current.confirmed!== prev.confirmed; 
             const isDead = current.deaths!== prev.deaths;
             const isRecovered =  current.recovered!== prev.recovered;
-            if(delta === 'Total' && !(isConfirmed || isDead || isRecovered)) return;
+            if(delta === 'Total' && !(isConfirmed || isDead || isRecovered)) return updateList;
             if(isDead || isRecovered || isConfirmed){
                 const updatedStateData = {...current, state:delta, isDead, isRecovered, isConfirmed};
                 updateList.push(updatedStateData)
