@@ -22,6 +22,11 @@ class MapVisualiserContainer extends React.Component {
                 mapData: { ...parseMapData(mapData, covidData) }
             });
         })
+
+        axios.get('http://localhost:3000/poll').then((resp) => {
+            let covidData = resp.data;
+            console.log(resp)
+        })
     }
 
     setTooltip = (tooltipData) => {
