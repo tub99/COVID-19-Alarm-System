@@ -85,7 +85,7 @@ class MapVisualiser extends React.Component {
                         d3.select('#' + d.properties.id).style('stroke', '#5C603E').style('stroke-width', '2');
                         that.setTooltip({
                             ...d.properties,
-                            style: { left: window.event.pageX, top: window.event.pageY, opacity: 1 }
+                            style: { left: window.event.pageX, top: window.event.pageY-10, opacity: 1 }
                         });
                         // div.transition()
                         //     .duration(200)

@@ -1,5 +1,13 @@
 function StateMap(){
     this.deltaMap = {};
+
+    const initMap = (state) =>{
+        if(!this.deltaMap[state]){
+            this.deltaMap[state] = {
+                current : {}
+            }
+        }
+    }
     this.getStateList = (stateData) =>{
         return stateData.map((data)=>{
             const {state, confirmed, deaths, recovered, lastupdatedtime, delta} = data;
@@ -23,10 +31,12 @@ function StateMap(){
     this.getTodayData = (stateData) =>{
         return stateData.map((data)=>{
             const {state, delta, lastupdatedtime} = data;
+            initMap(state);
             this.deltaMap[state]["current"]= delta;
+       
             return {
               state,
-              delta,
+              ...delta,
               lastupdatedtime
             }
         });

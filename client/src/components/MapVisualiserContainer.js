@@ -4,10 +4,12 @@ import Tooltip from "./Tooltip";
 import axios from "axios";
 import mapData from "./../assets/india.json";
 import { parseMapData } from "../utils/Dataparser";
-import DeltaTable from "./DeltaTable";
+
+import TabularInfo from './TabularInfo';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
+import Col from 'react-bootstrap/Col';
+import Navbar from 'react-bootstrap/Navbar'
 class MapVisualiserContainer extends React.Component {
   constructor() {
     super();
@@ -28,10 +30,16 @@ class MapVisualiserContainer extends React.Component {
         });
       });
     };
+    const getCOVIDDelta = () =>{
+        axios.get("http://localhost:3000/covid-data/delta").then(resp => {
+        let delta = resp.data;
+        this.setState({delta});
+      });
+    }
     getCOVIDData();
     setInterval(() => {
-      getCOVIDData();
-    }, 500000000);
+       // getCOVIDDelta();
+    }, 5000000);
   }
 
   setTooltip = tooltipData => {
@@ -55,7 +63,9 @@ class MapVisualiserContainer extends React.Component {
     const { mapData, tooltipData } = this.state;
     return (
       <>
+      
         <Container fluid>
+        <Navbar bg="light" variant="light" >COVID-19 Alarm System</Navbar>
           <Row>
             <Col>
               <MapVisualiser setTooltip={this.setTooltip} mapData={mapData} />
@@ -66,7 +76,7 @@ class MapVisualiserContainer extends React.Component {
               )}
             </Col>
             <Col>
-            <DeltaTable delta= {this.state.delta}/>
+            <TabularInfo delta= {this.state.delta}/>
             </Col>
           </Row>
         </Container>

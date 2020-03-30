@@ -36,12 +36,12 @@ div.tooltip {
   height: auto;
   padding: 2px;
   font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
+  background: #E3E7CB;
   border-radius: 8px;
   pointer-events: none;
   transition: 0.2s all ease ;
-  opacity: 0;
+  opacity: 0.5;
+  border: 0px;
 }
 
 svg path{
