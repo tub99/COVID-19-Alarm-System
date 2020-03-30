@@ -31,7 +31,6 @@ function StateMap(){
     this.getTodayData = (stateData) =>{
         return stateData.map((data)=>{
             const {state, delta, lastupdatedtime} = data;
-            initMap(state);
             this.deltaMap[state]["current"]= delta;
        
             return {
@@ -47,12 +46,12 @@ function StateMap(){
         for(let delta in this.deltaMap){
             const current = this.deltaMap[delta]["current"];
             const prev = this.deltaMap[delta]["prev"];
-            const isConfirmed = current.confirmed!== prev.confirmed; 
-            const isDead = current.deaths!== prev.deaths;
-            const isRecovered =  current.recovered!== prev.recovered;
+            const isConfirmed = current.confirmed - prev.confirmed; 
+            const isDead = current.deaths - prev.deaths;
+            const isRecovered =  current.recovered - prev.recovered;
             if(delta === 'Total' && !(isConfirmed || isDead || isRecovered)) return updateList;
             if(isDead || isRecovered || isConfirmed){
-                const updatedStateData = {...current, state:delta, isDead, isRecovered, isConfirmed};
+                const updatedStateData = {state:delta, isDead, isRecovered, isConfirmed};
                 updateList.push(updatedStateData)
             }
             this.deltaMap[delta]["prev"] = current;
@@ -61,5 +60,6 @@ function StateMap(){
     }
     
 }
+
 
 module.exports = new StateMap();
