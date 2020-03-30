@@ -4,25 +4,25 @@ import Tabs from 'react-bootstrap/Tabs'
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import DeltaTable from "./DeltaTable";
+import CovidTable from "./CovidTable";
 import axios from "axios";
 
 const TabularInfo = props => {
-    const {delta} = props;
+    const {covidData} = props;
     const [tabularData,setTabularData] = useState([]);
-    console.log(delta, tabularData);
+    console.log(covidData, tabularData);
     useEffect(()=>{
-        setTabularData(delta);
-    },[delta])
+        setTabularData(covidData);
+    },[covidData])
 
   const loadData = eventKey => {
     // console.log(eventKey);
     if(eventKey === '1'){
-        setTabularData(delta);
+        setTabularData(covidData);
     }else if(eventKey === '2'){
         axios.get("http://localhost:3000/covid-data/today").then(resp => {
-            let delta = resp.data;
-            setTabularData(delta);
+            let covidData = resp.data;
+            setTabularData(covidData);
           });
     }
   };
@@ -41,7 +41,7 @@ const TabularInfo = props => {
       </Row>
       <Row>
         <Col>
-          {tabularData.length>0 && <DeltaTable delta={tabularData}></DeltaTable>}
+          {tabularData.length>0 && <CovidTable covidData={tabularData}></CovidTable>}
         </Col>
       </Row>
     </Container>

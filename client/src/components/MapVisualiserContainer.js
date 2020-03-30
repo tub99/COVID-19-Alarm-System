@@ -15,6 +15,7 @@ class MapVisualiserContainer extends React.Component {
     super();
     this.state = {
       mapData: {},
+      covidData:[],
       delta: []
     };
   }
@@ -23,9 +24,8 @@ class MapVisualiserContainer extends React.Component {
     const getCOVIDData = () => {
       axios.get("http://localhost:3000/covid-data").then(resp => {
         let covidData = resp.data;
-        this.setState({delta:covidData})
         this.setState({
-          totalData: covidData.shift(),
+            covidData,
           mapData: { ...parseMapData(mapData, covidData) }
         });
       });
@@ -76,7 +76,7 @@ class MapVisualiserContainer extends React.Component {
               )}
             </Col>
             <Col>
-            <TabularInfo delta= {this.state.delta}/>
+            <TabularInfo covidData= {this.state.covidData}/>
             </Col>
           </Row>
         </Container>

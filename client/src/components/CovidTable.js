@@ -1,9 +1,9 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-const DeltaTable = props => {
-    const {delta} = props;
-  const createRows = delta => {
-    return delta.map(data => {
+const CovidTable = props => {
+    const {covidData} = props;
+  const createRows = covidData => {
+    return covidData.map(data => {
       const { state, confirmed, deaths, recovered } = data;
       return (
         <tr>
@@ -26,10 +26,10 @@ const DeltaTable = props => {
         </tr>
       </thead>
       <tbody>
-       {createRows(delta)}
+       {createRows(covidData)}
       </tbody>
     </Table>
   );
 };
 
-export default DeltaTable;
+export default CovidTable;
