@@ -41,7 +41,7 @@ class MapVisualiser extends React.Component {
         let states = topojson.feature(topoMap, topoMap.objects.india);
 
         // Map render
-        let map = this.stateMap(states.features).width(800).height(700).scale(1200);
+        let map = this.stateMap(states.features).width(450).height(500).scale(800);
         d3.select("#map").call(map);
     }
 
@@ -81,17 +81,11 @@ class MapVisualiser extends React.Component {
                     .attr("d", path)
                     .attr("id", (data) => { return data.properties.id })
                     .on("mouseover", (d) => {
-                        d3.select('#' + d.properties.id).style('stroke', 'red').style('stroke-width', '4');
+                        d3.select('#' + d.properties.id).style('stroke', '#da1d0ade').style('stroke-width', '4');
                         that.setTooltip({
                             ...d.properties,
                             style: { left: window.event.pageX, top: window.event.pageY, opacity: 1 }
                         });
-                        // div.transition()
-                        //     .duration(200)
-                        //     .style("opacity", .9);
-                        // div.html(d.properties.state + "<br/>" + d.properties.confirmed)
-                        //     .style("left", (window.event.pageX) + "px")
-                        //     .style("top", (window.event.pageY - 28) + "px");
                     })
                     .on("mouseout", function (d) {
                         d3.select('#' + d.properties.id).style('stroke', '#000').style('stroke-width', '1');
@@ -99,9 +93,6 @@ class MapVisualiser extends React.Component {
                             ...d.properties,
                             style: { left: window.event.pageX, top: window.event.pageY - 28, opacity: 0 }
                         });
-                        // div.transition()
-                        //     .duration(500)
-                        //     .style("opacity", 0);
                     });
 
                 // svg.selectAll("text").data(states).enter().append("text")
@@ -135,7 +126,7 @@ class MapVisualiser extends React.Component {
     }
     render() {
         return (
-            <div id="map"></div>
+            <div id="map" className="fadeInUp"></div>
         );
     }
 

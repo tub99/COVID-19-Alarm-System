@@ -5,6 +5,7 @@ import './App.css';
 function App() {
   return (
     <>
+      <header>COVID-19 Info</header>
       <MapVisualiserContainer />
     </>
   );

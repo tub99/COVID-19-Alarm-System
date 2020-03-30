@@ -34,12 +34,13 @@ class MapVisualiserContainer extends React.Component {
     }
 
     prepareTooltipBody(tooltipData) {
+        const { state, confirmed, deaths, recovered } = tooltipData;
         return (
             <>
                 <span><strong>{tooltipData.state}</strong></span>
-                <p>confirmed: {tooltipData.confirmed}</p>
-                <p>deaths: {tooltipData.deaths}</p>
-                <p>recovered: {tooltipData.recovered}</p>
+                <p>active: {confirmed - deaths - recovered}</p>
+                {/* <p>deaths: {deaths}</p>
+                <p>recovered: {recovered}</p> */}
             </>
         );
     }
