@@ -31,7 +31,6 @@ function StateMap(){
     this.getTodayData = (stateData) =>{
         return stateData.map((data)=>{
             const {state, delta, lastupdatedtime} = data;
-            initMap(state);
             this.deltaMap[state]["current"]= delta;
        
             return {
