@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  
 }
 
 .App-logo {
@@ -32,25 +31,26 @@
 div.tooltip {
   position: absolute;
   text-align: center;
+  color: #fff;
   width: auto;
   height: auto;
   padding: 2px;
   font: 12px sans-serif;
-  background: #E3E7CB;
+  background: #43443f;
   border-radius: 8px;
   pointer-events: none;
-  transition: 0.2s all ease ;
+  transition: 0.2s all ease;
   opacity: 0.5;
-  border: 0px;
+  border: 0px
 }
 
-svg path{
+svg path {
   stroke: #000;
   stroke-width: 1;
 }
 
 .fadeInUp {
-  animation-delay: 1.1s;
+  animation-delay: 2.1s;
   animation-name: fadeIn;
   animation-duration: 0.45s;
   animation-fill-mode: both;
@@ -60,7 +60,6 @@ svg path{
   0% {
     opacity: 0;
   }
-
   100% {
     opacity: 1;
   }
@@ -75,7 +74,17 @@ svg path{
   }
 }
 
-.covid-stats-table-container{
+.covid-stats-table-container {
   font-size: 0.9rem;
   margin-top: 2%;
+}
+
+#map {
+  background-color: #8cbad6;
+  margin-top: 2%;
+  margin-left: 1%;
+}
+
+.covid-stats-table-container .nav-item {
+  color: #ffe4c4;
 }

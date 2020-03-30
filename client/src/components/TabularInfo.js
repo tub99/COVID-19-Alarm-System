@@ -32,9 +32,9 @@ const TabularInfo = props => {
       <Row>
         <Col>
           <Tabs id="uncontrolled-tab-example" onSelect={loadData}>
-            <Tab eventKey="1" title="Total Cases">
+            <Tab eventKey="1" className="covid-table-tabs" title="Total Cases">
             </Tab>
-            <Tab eventKey="2" title="Today's Cases">
+            <Tab eventKey="2" className="covid-table-tabs" title="Today's Cases">
             </Tab>
           </Tabs>
         </Col>

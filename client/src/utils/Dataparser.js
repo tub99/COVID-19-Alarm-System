@@ -3,7 +3,7 @@ const parseMapData = (mapData, covidData) => {
     geometries = geometries.map((data, i) => {
         let stateData = getStateByName(covidData, data.properties.ST_NM);
         if (stateData) {
-            return { ...data, properties: { ...data.properties, ...stateData, id: `st_${i}` } };
+            return { ...data, properties: { ...data.properties, ...stateData, id: `st_${data.properties.ST_NM.split(" ").join("_")}` } };
         }
         return data;
     });

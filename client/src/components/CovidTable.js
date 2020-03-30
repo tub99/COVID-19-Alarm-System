@@ -3,10 +3,10 @@ import Table from "react-bootstrap/Table";
 const CovidTable = props => {
     const {covidData} = props;
   const createRows = covidData => {
-    return covidData.map(data => {
+    return covidData.map((data,i) => {
       const { state, confirmed, deaths, recovered } = data;
       return (
-        <tr>
+        <tr key={i}>
           <td>{state}</td>
           <td>{confirmed}</td>
           <td>{deaths}</td>

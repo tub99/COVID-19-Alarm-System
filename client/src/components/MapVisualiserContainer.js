@@ -9,42 +9,69 @@ import TabularInfo from './TabularInfo';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col';
-import Navbar from 'react-bootstrap/Navbar'
+import Navbar from 'react-bootstrap/Navbar';
+import {notifyCovidUpdates} from '../utils/Notifier';
 class MapVisualiserContainer extends React.Component {
   constructor() {
     super();
     this.state = {
       mapData: {},
-      covidData:[],
+      covidData: [],
       delta: []
     };
   }
 
   componentDidMount() {
-    const getCOVIDData = (isDelta=false,delta=null) => {
+    const getCOVIDData = (isDelta = false, delta = null) => {
       axios.get("http://localhost:3000/covid-data").then(resp => {
         let covidData = resp.data;
         this.setState({
-            covidData,
+          covidData,
           mapData: { ...parseMapData(mapData, covidData) }
         });
-        if(isDelta) {
-            this.setState({delta});
+        if (isDelta) {
+          this.setState({ delta });
+          notifyCovidUpdates(delta);
         }
       });
     };
     const getCOVIDDelta = () => {
       axios.get("http://localhost:3000/covid-data/delta").then(resp => {
         let delta = resp.data;
-        if(delta.length>0){
-            getCOVIDData(true, delta)
+
+        delta = [
+          {
+            "state": "Total",
+            "isDead": 0,
+            "isRecovered": 44,
+            "isConfirmed": 0
+          },
+          {
+            "state": "Maharashtra",
+            "isDead": 70,
+            "isRecovered": 0,
+            "isConfirmed": 0
+          },
+          {
+            "state": "Uttar Pradesh",
+            "isDead": 0,
+            "isRecovered": 0,
+            "isConfirmed": 700
+          }
+        ];
+
+        if (delta.length > 0) {
+          getCOVIDData(true, delta)
         }
       });
     }
     getCOVIDData();
+    setTimeout(() => {
+      getCOVIDDelta();
+    }, 2000);
     setInterval(() => {
       // getCOVIDDelta();
-    }, 5000000);
+    }, 1800000);
   }
 
   prepareTooltipBody(tooltipData) {
@@ -65,9 +92,9 @@ class MapVisualiserContainer extends React.Component {
   prepareTooltipBody(tooltipData) {
     return (
       <>
-        <span>
+        <h6>
           <strong>{tooltipData.state}</strong>
-        </span>
+        </h6>
         <p>confirmed: {tooltipData.confirmed}</p>
         <p>deaths: {tooltipData.deaths}</p>
         <p>recovered: {tooltipData.recovered}</p>
@@ -76,7 +103,7 @@ class MapVisualiserContainer extends React.Component {
   }
 
   render() {
-    const { mapData, tooltipData } = this.state;
+    const { mapData, tooltipData, delta } = this.state;
     return (
       <>
 
@@ -84,7 +111,7 @@ class MapVisualiserContainer extends React.Component {
           <Navbar bg="light" variant="light" >COVID-19 Alarm System</Navbar>
           <Row>
             <Col>
-              <MapVisualiser setTooltip={this.setTooltip} mapData={mapData} />
+              <MapVisualiser delta={delta} setTooltip={this.setTooltip} mapData={mapData} />
               {tooltipData && (
                 <Tooltip style={tooltipData.style}>
                   {this.prepareTooltipBody(tooltipData)}
@@ -92,7 +119,7 @@ class MapVisualiserContainer extends React.Component {
               )}
             </Col>
             <Col>
-            <TabularInfo covidData= {this.state.covidData}/>
+              <TabularInfo covidData={this.state.covidData} />
             </Col>
           </Row>
         </Container>

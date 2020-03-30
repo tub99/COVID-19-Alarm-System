@@ -11,7 +11,8 @@ class MapVisualiser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            mapData: {}
+            mapData: {},
+            delta: []
         }
     }
     componentDidMount() {
@@ -24,6 +25,10 @@ class MapVisualiser extends React.Component {
             this.setState({ mapData: nextProps.mapData })
             this.initMap(nextProps.mapData);
         }
+        if (this.state.delta !== nextProps.delta) {
+            this.setState({ delta: nextProps.delta });
+            setTimeout(() => this.highlightChangedStates(nextProps.delta), 0);
+        }
     }
 
     // static getDerivedStateFromProps(nextProps, prevState) {
@@ -34,6 +39,41 @@ class MapVisualiser extends React.Component {
     //     return null;
     // }
 
+    highlightChangedStates(delta) {
+        let data = [...delta];
+        data.shift();
+        data.forEach((state) => {
+
+            if (state.isDead > 0) {
+                d3.select(`#st_${state.state.split(" ").join("_")}`)
+                    .style('stroke', '#d62525')
+                    .style('stroke-width', '3')
+                    .transition()
+                    .duration(3000)
+                    .style('stroke', '#000')
+                    .style('stroke-width', '1');
+
+            } else if (state.isConfirmed > 0) {
+                d3.select(`#st_${state.state.split(" ").join("_")}`)
+                    .style('stroke', '#ffc107')
+                    .style('stroke-width', '3')
+                    .transition()
+                    .duration(3000)
+                    .style('stroke', '#000')
+                    .style('stroke-width', '1');
+
+            } else if (state.isRecovered > 0) {
+                d3.select(`#st_${state.state.split(" ").join("_")}`)
+                    .style('stroke', '#20c997')
+                    .style('stroke-width', '3')
+                    .transition()
+                    .duration(3000)
+                    .style('stroke', '#000')
+                    .style('stroke-width', '1');
+            }
+        })
+    }
+
     initMap(data) {
         if (!Object.keys(data).length) return;
         let topoMap = data;
@@ -41,7 +81,9 @@ class MapVisualiser extends React.Component {
         let states = topojson.feature(topoMap, topoMap.objects.india);
 
         // Map render
-        let map = this.stateMap(states.features).width(450).height(500).scale(700);
+        let mapContainerWidth = document.getElementById('map').clientWidth - 20,
+            scaleValue = document.body.clientWidth < 500 ? 600 : 800;
+        let map = this.stateMap(states.features).width(mapContainerWidth).height(500).scale(scaleValue);
         d3.select("#map").call(map);
     }
 
@@ -49,13 +91,13 @@ class MapVisualiser extends React.Component {
 
         var width = 800, height = 700, scale = 160;
         //var colors = ["#ffffff", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"];
-        var colors= ["#fff","#E6E7DE","#CDD0BE","#B4B89D","#9CA17D"]
+        var colors = ["#fff", "#E6E7DE", "#CDD0BE", "#B4B89D", "#9CA17D"]
         let that = this;
         function render(selection) {
             selection.each(function () {
 
                 var color = d3.scaleLinear()
-                    .domain([d3.min(states, function(d) { return d.properties.confirmed; }), d3.max(states, function(d) { return d.properties.confirmed; })])
+                    .domain([d3.min(states, function (d) { return d.properties.confirmed; }), d3.max(states, function (d) { return d.properties.confirmed; })])
                     .range(colors);
                 d3.select(this).select("svg").remove();
                 var svg = d3.select(this).append("svg")
@@ -85,7 +127,7 @@ class MapVisualiser extends React.Component {
                         d3.select('#' + d.properties.id).style('stroke', '#5C603E').style('stroke-width', '2');
                         that.setTooltip({
                             ...d.properties,
-                            style: { left: window.event.pageX, top: window.event.pageY-10, opacity: 1 }
+                            style: { left: window.event.pageX, top: window.event.pageY - 10, opacity: 1 }
                         });
                     })
                     .on("mouseout", function (d) {
