@@ -13,7 +13,7 @@ const TabularInfo = props => {
     console.log(covidData, tabularData);
     useEffect(()=>{
         setTabularData(covidData);
-    },[covidData])
+    },[covidData]);
 
   const loadData = eventKey => {
     // console.log(eventKey);
