@@ -21,19 +21,24 @@ class MapVisualiserContainer extends React.Component {
   }
 
   componentDidMount() {
-    const getCOVIDData = () => {
+    const getCOVIDData = (isDelta=false,delta=null) => {
       axios.get("http://localhost:3000/covid-data").then(resp => {
         let covidData = resp.data;
         this.setState({
             covidData,
           mapData: { ...parseMapData(mapData, covidData) }
         });
+        if(isDelta) {
+            this.setState({delta});
+        }
       });
     };
     const getCOVIDDelta = () =>{
         axios.get("http://localhost:3000/covid-data/delta").then(resp => {
         let delta = resp.data;
-        this.setState({delta});
+        if(delta.length>0){
+            getCOVIDData(true, delta)
+        }
       });
     }
     getCOVIDData();
