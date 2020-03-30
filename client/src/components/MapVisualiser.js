@@ -41,14 +41,15 @@ class MapVisualiser extends React.Component {
         let states = topojson.feature(topoMap, topoMap.objects.india);
 
         // Map render
-        let map = this.stateMap(states.features).width(450).height(500).scale(800);
+        let map = this.stateMap(states.features).width(450).height(500).scale(700);
         d3.select("#map").call(map);
     }
 
     stateMap(states) {
 
         var width = 800, height = 700, scale = 160;
-        var colors = ["#dadaeb", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"];
+        //var colors = ["#ffffff", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"];
+        var colors= ["#fff","#E6E7DE","#CDD0BE","#B4B89D","#9CA17D"]
         let that = this;
         function render(selection) {
             selection.each(function () {
@@ -81,10 +82,10 @@ class MapVisualiser extends React.Component {
                     .attr("d", path)
                     .attr("id", (data) => { return data.properties.id })
                     .on("mouseover", (d) => {
-                        d3.select('#' + d.properties.id).style('stroke', '#da1d0ade').style('stroke-width', '4');
+                        d3.select('#' + d.properties.id).style('stroke', '#5C603E').style('stroke-width', '2');
                         that.setTooltip({
                             ...d.properties,
-                            style: { left: window.event.pageX, top: window.event.pageY, opacity: 1 }
+                            style: { left: window.event.pageX, top: window.event.pageY-10, opacity: 1 }
                         });
                     })
                     .on("mouseout", function (d) {
