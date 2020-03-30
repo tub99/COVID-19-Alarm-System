@@ -27,7 +27,7 @@ class MapVisualiser extends React.Component {
         }
         if (this.state.delta !== nextProps.delta) {
             this.setState({ delta: nextProps.delta });
-            setTimeout(() => this.highlightChangedStates(nextProps.delta), 0);
+            requestAnimationFrame(() => this.highlightChangedStates(nextProps.delta));
         }
     }
 
@@ -49,7 +49,7 @@ class MapVisualiser extends React.Component {
                     .style('stroke', '#d62525')
                     .style('stroke-width', '3')
                     .transition()
-                    .duration(3000)
+                    .duration(5000)
                     .style('stroke', '#000')
                     .style('stroke-width', '1');
 
@@ -58,7 +58,7 @@ class MapVisualiser extends React.Component {
                     .style('stroke', '#ffc107')
                     .style('stroke-width', '3')
                     .transition()
-                    .duration(3000)
+                    .duration(5000)
                     .style('stroke', '#000')
                     .style('stroke-width', '1');
 
