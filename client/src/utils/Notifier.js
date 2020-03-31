@@ -19,7 +19,7 @@ function notifyMe(text, audioPath) {
         alert("This browser does not support desktop notification");
     }
     else if (Notification.permission === "granted") {
-        var notification = new Notification("Updates!", options);
+        var notification = new Notification("COVID-19 Updates", options);
     }
     else if (Notification.permission !== "denied") {
         Notification.requestPermission(function (permission) {

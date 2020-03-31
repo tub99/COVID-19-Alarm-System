@@ -94,7 +94,7 @@ svg path {
 }
 
 .covid-stats-table-container .table-responsive{
-  height: 81vh;
+  height: 55vh;
   margin-bottom: 5%;
   overflow: auto;
 }

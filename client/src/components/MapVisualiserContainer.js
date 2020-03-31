@@ -102,7 +102,7 @@ class MapVisualiserContainer extends React.Component {
 
     setInterval(() => {
         getCOVIDDelta();
-      }, 16000);
+      }, 9916000);
   }
 
   prepareTooltipBody(tooltipData) {
