@@ -5,12 +5,13 @@ import axios from "axios";
 import mapData from "./../assets/india.json";
 import { parseMapData } from "../utils/Dataparser";
 
-import TabularInfo from './TabularInfo';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Navbar from 'react-bootstrap/Navbar';
-import {notifyCovidUpdates} from '../utils/Notifier';
+import TabularInfo from "./TabularInfo";
+import InfoUpdate from "./InfoUpdate";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Navbar from "react-bootstrap/Navbar";
+import { notifyCovidUpdates } from "../utils/Notifier";
 class MapVisualiserContainer extends React.Component {
   constructor() {
     super();
@@ -36,80 +37,88 @@ class MapVisualiserContainer extends React.Component {
       });
     };
     const getCOVIDDelta = () => {
+      let delta = [
+        {
+          state: "Total",
+          isDead: 1,
+          isRecovered: 0,
+          isConfirmed: 164,
+          lastupdatedtime: "31/03/2020 00:22:24"
+        },
+        {
+          state: "Maharashtra",
+          isDead: 0,
+          isRecovered: 0,
+          isConfirmed: 64,
+          lastupdatedtime: "31/03/2020 00:22:24"
+        },
+        {
+          state: "West Bengal",
+          isDead: 1,
+          isRecovered:0,
+          isConfirmed: 5,
+          lastupdatedtime: "31/03/2020 00:22:24"
+        },
+        {
+          state: "Kerala",
+          isDead: 0,
+          isRecovered:0,
+          isConfirmed: 7,
+          lastupdatedtime: "31/03/2020 00:22:24"
+        }
+      ];
 
-       let delta = [
-            {
-              "state": "Odisha",
-              "isDead": 90,
-              "isRecovered": 30,
-              "isConfirmed": 70
-            },
-            {
-              "state": "Maharashtra",
-              "isDead": 0,
-              "isRecovered": 70,
-              "isConfirmed": 0
-            },
-            {
-              "state": "Uttar Pradesh",
-              "isDead": 0,
-              "isRecovered": 30,
-              "isConfirmed": 800
-            }
-          ];
-  
-          if (delta.length > 0) {
-            getCOVIDData(true, delta)
-          }
+      if (delta.length > 0) {
+        getCOVIDData(true, delta);
+      }
 
+      //   axios.get("http://localhost:3000/covid-data/delta").then(resp => {
+      //     let delta = resp.data;
 
+      //     delta = [
+      //       {
+      //         "state": "Keral",
+      //         "isDead": 0,
+      //         "isRecovered": 30,
+      //         "isConfirmed": 0
+      //       },
+      //       {
+      //         "state": "Maharashtra",
+      //         "isDead": 70,
+      //         "isRecovered": 0,
+      //         "isConfirmed": 0
+      //       },
+      //       {
+      //         "state": "Uttar Pradesh",
+      //         "isDead": 0,
+      //         "isRecovered": 30,
+      //         "isConfirmed": 700
+      //       }
+      //     ];
 
-
-    //   axios.get("http://localhost:3030/covid-data/delta").then(resp => {
-    //     let delta = resp.data;
-
-    //     delta = [
-    //       {
-    //         "state": "Keral",
-    //         "isDead": 0,
-    //         "isRecovered": 30,
-    //         "isConfirmed": 0
-    //       },
-    //       {
-    //         "state": "Maharashtra",
-    //         "isDead": 70,
-    //         "isRecovered": 0,
-    //         "isConfirmed": 0
-    //       },
-    //       {
-    //         "state": "Uttar Pradesh",
-    //         "isDead": 0,
-    //         "isRecovered": 30,
-    //         "isConfirmed": 700
-    //       }
-    //     ];
-
-    //     if (delta.length > 0) {
-    //       getCOVIDData(true, delta)
-    //     }
-    //   });
-    }
+      //     if (delta.length > 0) {
+      //       getCOVIDData(true, delta)
+      //     }
+      //   });
+    };
     getCOVIDData();
     //polling on updates
     // setInterval(() => {
     //   getCOVIDDelta();
     // }, 4*3600000);
 
-    setInterval(() => {
-        getCOVIDDelta();
-      }, 20000);
+    setTimeout(() => {
+      getCOVIDDelta();
+    }, 20000);
   }
 
   prepareTooltipBody(tooltipData) {
     const { state, confirmed, deaths, recovered } = tooltipData;
     return (
       <>
-        <span><strong>{tooltipData.state}</strong></span>
+        <span>
+          <strong>{tooltipData.state}</strong>
+        </span>
         <p>active: {confirmed - deaths - recovered}</p>
         {/* <p>deaths: {deaths}</p>
                 <p>recovered: {recovered}</p> */}
@@ -137,12 +146,17 @@ class MapVisualiserContainer extends React.Component {
     const { mapData, tooltipData, delta } = this.state;
     return (
       <>
-
         <Container fluid>
-          <Navbar bg="light" variant="light" ><h5 style={{fontFamily: 'fantasy'}}>COVID-19 Alarm System</h5></Navbar>
+          <Navbar bg="light" variant="light">
+            <h5 style={{ fontFamily: "fantasy" }}>COVID-19 Alarm System</h5>
+          </Navbar>
           <Row>
             <Col>
-              <MapVisualiser delta={delta} setTooltip={this.setTooltip} mapData={mapData} />
+              <MapVisualiser
+                delta={delta}
+                setTooltip={this.setTooltip}
+                mapData={mapData}
+              />
               {tooltipData && (
                 <Tooltip style={tooltipData.style}>
                   {this.prepareTooltipBody(tooltipData)}
@@ -152,6 +166,12 @@ class MapVisualiserContainer extends React.Component {
             <Col>
               <TabularInfo covidData={this.state.covidData} />
             </Col>
+          </Row>
+          <Row>
+            <Col>
+              <InfoUpdate info={this.state.delta}></InfoUpdate>
+            </Col>
+            <Col></Col>
           </Row>
         </Container>
       </>

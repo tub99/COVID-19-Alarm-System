@@ -34,6 +34,7 @@ class MapVisualiser extends React.Component {
 
     highlightChangedStates(delta) {
         let data = [...delta];
+        data.shift();
         const animate = (state,color, dur=15000) =>{
             const id = `#st_${state.state.split(" ").join("_")}`;
             const filledColor =  d3.select(id).style('fill');

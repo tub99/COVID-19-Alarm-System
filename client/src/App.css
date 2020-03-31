@@ -80,7 +80,7 @@ svg path {
 }
 
 #map {
-  background-color: #8cbad6;
+  background-color: #454d55;
   margin-top: 2%;
   margin-left: 1%;
 }
@@ -91,6 +91,7 @@ svg path {
 
 .dark-theme{
   background-color: #282c34;
+  color: white;
 }
 
 .covid-stats-table-container .table-responsive{
@@ -100,4 +101,10 @@ svg path {
 }
 .covid-stats-table-container .table-responsive table{
   margin-bottom: 0;
+}
+
+.info-updates{
+  height: 10vh;
+  margin-bottom: 5%;
+  overflow: auto;
 }
