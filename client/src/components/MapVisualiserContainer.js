@@ -6,8 +6,8 @@ import mapData from "./../assets/india.json";
 import { parseMapData } from "../utils/Dataparser";
 
 import TabularInfo from './TabularInfo';
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Navbar from 'react-bootstrap/Navbar';
 import {notifyCovidUpdates} from '../utils/Notifier';
@@ -66,11 +66,12 @@ class MapVisualiserContainer extends React.Component {
       });
     }
     getCOVIDData();
-    setTimeout(() => {
-      getCOVIDDelta();
-    }, 2000);
+    // setTimeout(() => {
+    //   getCOVIDDelta();
+    // }, 2000);
+    //polling for delta
     setInterval(() => {
-      // getCOVIDDelta();
+      getCOVIDDelta();
     }, 1800000);
   }
 
@@ -108,7 +109,7 @@ class MapVisualiserContainer extends React.Component {
       <>
 
         <Container fluid>
-          <Navbar bg="light" variant="light" >COVID-19 Alarm System</Navbar>
+          <Navbar bg="light" variant="light" ><h5 style={{fontFamily: 'fantasy'}}>COVID-19 Alarm System</h5></Navbar>
           <Row>
             <Col>
               <MapVisualiser delta={delta} setTooltip={this.setTooltip} mapData={mapData} />
