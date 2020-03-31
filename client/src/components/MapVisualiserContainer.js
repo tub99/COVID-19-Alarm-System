@@ -39,7 +39,7 @@ class MapVisualiserContainer extends React.Component {
 
        let delta = [
             {
-              "state": "West Bengal",
+              "state": "Odisha",
               "isDead": 90,
               "isRecovered": 30,
               "isConfirmed": 70
@@ -102,7 +102,7 @@ class MapVisualiserContainer extends React.Component {
 
     setInterval(() => {
         getCOVIDDelta();
-      }, 9916000);
+      }, 20000);
   }
 
   prepareTooltipBody(tooltipData) {
