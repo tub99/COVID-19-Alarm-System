@@ -14,7 +14,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 var corsOptions = {
-  origin: 'http://localhost:8000',
+  origin: 'http://localhost:3000',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(cors(corsOptions));
@@ -43,21 +43,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-var longpoll = require("express-longpoll")(app);
- 
-// Creates app.get("/poll") for the long poll
-longpoll.create("/poll");
- 
-var data = { text: "Some data" };
- 
-// Publishes data to all clients long polling /poll endpoint
-// You need to call this AFTER you make a GET request to /poll
-longpoll.publish("/poll", data);
- 
-// Publish every 5 seconds
-setInterval(function () { 
-    longpoll.publish("/poll", data);
-}, 5000);
+
 
 
 

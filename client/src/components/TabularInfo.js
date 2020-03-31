@@ -20,7 +20,7 @@ const TabularInfo = props => {
     if(eventKey === '1'){
         setTabularData(covidData);
     }else if(eventKey === '2'){
-        axios.get("http://localhost:3000/covid-data/today").then(resp => {
+        axios.get("http://localhost:3030/covid-data/today").then(resp => {
             let covidData = resp.data;
             setTabularData(covidData);
           });

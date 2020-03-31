@@ -23,7 +23,7 @@ class MapVisualiserContainer extends React.Component {
 
   componentDidMount() {
     const getCOVIDData = (isDelta = false, delta = null) => {
-      axios.get("http://localhost:3000/covid-data").then(resp => {
+      axios.get("http://localhost:3030/covid-data").then(resp => {
         let covidData = resp.data;
         this.setState({
           covidData,
@@ -65,7 +65,7 @@ class MapVisualiserContainer extends React.Component {
 
 
 
-    //   axios.get("http://localhost:3000/covid-data/delta").then(resp => {
+    //   axios.get("http://localhost:3030/covid-data/delta").then(resp => {
     //     let delta = resp.data;
 
     //     delta = [
