@@ -88,3 +88,16 @@ svg path {
 .covid-stats-table-container .nav-item {
   color: #ffe4c4;
 }
+
+.dark-theme{
+  background-color: #282c34;
+}
+
+.covid-stats-table-container .table-responsive{
+  height: 81vh;
+  margin-bottom: 5%;
+  overflow: auto;
+}
+.covid-stats-table-container .table-responsive table{
+  margin-bottom: 0;
+}
