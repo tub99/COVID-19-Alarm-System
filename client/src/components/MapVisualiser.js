@@ -31,45 +31,32 @@ class MapVisualiser extends React.Component {
         }
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-
-    //     if (prevState.mapData !== nextProps.mapData) {
-    //         return { mapData: nextProps.mapData }
-    //     }
-    //     return null;
-    // }
 
     highlightChangedStates(delta) {
         let data = [...delta];
-        data.shift();
+        const animate = (state,color, dur=15000) =>{
+            const id = `#st_${state.state.split(" ").join("_")}`;
+            const filledColor =  d3.select(id).style('fill');
+            d3.select(`#st_${state.state.split(" ").join("_")}`)
+            .style('fill', color)
+            .style('opacity', 0.7)
+            .style('stroke-width', '2')
+            .transition()
+            .duration(dur)
+            .style('fill', filledColor)
+            .style('opacity', 1)
+            .style('stroke-width', '1');
+        }
         data.forEach((state) => {
 
             if (state.isDead > 0) {
-                d3.select(`#st_${state.state.split(" ").join("_")}`)
-                    .style('stroke', '#d62525')
-                    .style('stroke-width', '3')
-                    .transition()
-                    .duration(5000)
-                    .style('stroke', '#000')
-                    .style('stroke-width', '1');
+                animate(state,'#d62525' );
 
             } else if (state.isConfirmed > 0) {
-                d3.select(`#st_${state.state.split(" ").join("_")}`)
-                    .style('stroke', '#ffc107')
-                    .style('stroke-width', '3')
-                    .transition()
-                    .duration(5000)
-                    .style('stroke', '#000')
-                    .style('stroke-width', '1');
+                    animate(state,'#ffc107');
 
             } else if (state.isRecovered > 0) {
-                d3.select(`#st_${state.state.split(" ").join("_")}`)
-                    .style('stroke', '#20c997')
-                    .style('stroke-width', '3')
-                    .transition()
-                    .duration(3000)
-                    .style('stroke', '#000')
-                    .style('stroke-width', '1');
+                    animate(state,'#20c997')
             }
         })
     }
@@ -127,7 +114,7 @@ class MapVisualiser extends React.Component {
                         d3.select('#' + d.properties.id).style('stroke', '#5C603E').style('stroke-width', '2');
                         that.setTooltip({
                             ...d.properties,
-                            style: { left: window.event.pageX, top: window.event.pageY - 10, opacity: 1 }
+                            style: { left: window.event.pageX, top: window.event.pageY - 50, opacity: 1 }
                         });
                     })
                     .on("mouseout", function (d) {

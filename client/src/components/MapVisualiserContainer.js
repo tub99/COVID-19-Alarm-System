@@ -36,42 +36,73 @@ class MapVisualiserContainer extends React.Component {
       });
     };
     const getCOVIDDelta = () => {
-      axios.get("http://localhost:3000/covid-data/delta").then(resp => {
-        let delta = resp.data;
 
-        delta = [
-          {
-            "state": "Total",
-            "isDead": 0,
-            "isRecovered": 44,
-            "isConfirmed": 0
-          },
-          {
-            "state": "Maharashtra",
-            "isDead": 70,
-            "isRecovered": 0,
-            "isConfirmed": 0
-          },
-          {
-            "state": "Uttar Pradesh",
-            "isDead": 0,
-            "isRecovered": 0,
-            "isConfirmed": 700
+       let delta = [
+            {
+              "state": "West Bengal",
+              "isDead": 90,
+              "isRecovered": 30,
+              "isConfirmed": 70
+            },
+            {
+              "state": "Maharashtra",
+              "isDead": 0,
+              "isRecovered": 70,
+              "isConfirmed": 0
+            },
+            {
+              "state": "Uttar Pradesh",
+              "isDead": 0,
+              "isRecovered": 30,
+              "isConfirmed": 800
+            }
+          ];
+  
+          if (delta.length > 0) {
+            getCOVIDData(true, delta)
           }
-        ];
 
-        if (delta.length > 0) {
-          getCOVIDData(true, delta)
-        }
-      });
+
+
+
+    //   axios.get("http://localhost:3000/covid-data/delta").then(resp => {
+    //     let delta = resp.data;
+
+    //     delta = [
+    //       {
+    //         "state": "Keral",
+    //         "isDead": 0,
+    //         "isRecovered": 30,
+    //         "isConfirmed": 0
+    //       },
+    //       {
+    //         "state": "Maharashtra",
+    //         "isDead": 70,
+    //         "isRecovered": 0,
+    //         "isConfirmed": 0
+    //       },
+    //       {
+    //         "state": "Uttar Pradesh",
+    //         "isDead": 0,
+    //         "isRecovered": 30,
+    //         "isConfirmed": 700
+    //       }
+    //     ];
+
+    //     if (delta.length > 0) {
+    //       getCOVIDData(true, delta)
+    //     }
+    //   });
     }
     getCOVIDData();
-    setTimeout(() => {
-      getCOVIDDelta();
-    }, 2000);
+    //polling on updates
+    // setInterval(() => {
+    //   getCOVIDDelta();
+    // }, 4*3600000);
+
     setInterval(() => {
-      // getCOVIDDelta();
-    }, 1800000);
+        getCOVIDDelta();
+      }, 16000);
   }
 
   prepareTooltipBody(tooltipData) {
