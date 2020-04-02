@@ -95,7 +95,7 @@ svg path {
 }
 
 .covid-stats-table-container .table-responsive{
-  height: 55vh;
+  height: 58vh;
   margin-bottom: 5%;
   overflow: auto;
 }
@@ -107,4 +107,13 @@ svg path {
   height: 10vh;
   margin-bottom: 5%;
   overflow: auto;
+}
+
+.header-info{
+  color: black;
+}
+
+.user-help-info{
+  color: white;
+  background: grey;
 }

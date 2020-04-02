@@ -35,7 +35,7 @@ class MapVisualiser extends React.Component {
     highlightChangedStates(delta) {
         let data = [...delta];
         data.shift();
-        const animate = (state,color, dur=15000) =>{
+        const animate = (state,color, dur=1500000) =>{
             const id = `#st_${state.state.split(" ").join("_")}`;
             const filledColor =  d3.select(id).style('fill');
             d3.select(`#st_${state.state.split(" ").join("_")}`)
@@ -76,24 +76,29 @@ class MapVisualiser extends React.Component {
     }
 
     stateMap(states) {
-
+        const confirmedList = states.map(state => {
+            return state.properties.confirmed;
+        });
+        const max= Math.max.apply(this, confirmedList) || 0;
+        const min  = Math.min.apply(this, confirmedList) || 0;
+        console.log(max,min);
         var width = 800, height = 700, scale = 160;
         //var colors = ["#ffffff", "#bcbddc", "#9e9ac8", "#807dba", "#6a51a3"];
-        var colors = ["#fff", "#E6E7DE", "#CDD0BE", "#B4B89D", "#9CA17D"]
+        var colors = ["#fff",  "#9CA17D", '#7F9751', '#4D5F2B'];
         let that = this;
         function render(selection) {
             selection.each(function () {
-
                 var color = d3.scaleLinear()
-                    .domain([d3.min(states, function (d) { return d.properties.confirmed; }), d3.max(states, function (d) { return d.properties.confirmed; })])
-                    .range(colors);
+                   // .domain([d3.min(states, function (d) {return d.properties.confirmed; }), d3.max(states, function (d) { return d.properties.confirmed; })])
+                  .domain([min,max]) 
+                  .range(colors);
                 d3.select(this).select("svg").remove();
                 var svg = d3.select(this).append("svg")
                     .attr("width", width)
                     .attr("height", height);
 
                 var projection = d3.geoMercator()
-                    .center([83, 23])
+                    .center([82, 23])
                     .scale(scale)
                     .translate([width / 2, height / 2]);
 
@@ -115,7 +120,7 @@ class MapVisualiser extends React.Component {
                         d3.select('#' + d.properties.id).style('stroke', '#5C603E').style('stroke-width', '2');
                         that.setTooltip({
                             ...d.properties,
-                            style: { left: window.event.pageX, top: window.event.pageY - 50, opacity: 1 }
+                            style: { left: window.event.pageX, top: window.event.pageY - 60, opacity: 1 }
                         });
                     })
                     .on("mouseout", function (d) {
@@ -157,7 +162,9 @@ class MapVisualiser extends React.Component {
     }
     render() {
         return (
+     
             <div id="map" className="fadeInUp"></div>
+      
         );
     }
 

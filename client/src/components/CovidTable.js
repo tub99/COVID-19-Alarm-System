@@ -16,13 +16,13 @@ const CovidTable = props => {
     });
   };
   return (
-    <Table striped bordered hover responsive variant="dark">
+    <Table size="sm" striped bordered hover responsive variant="dark">
       <thead>
         <tr>
           <th>State</th>
           <th>Confirmed</th>
           <th>Deaths</th>
-          <th>Recovered</th>
+          <th>Rec</th>
         </tr>
       </thead>
       <tbody>
