@@ -36,7 +36,7 @@ class MapVisualiserContainer extends React.Component {
             delta : delta.deltaList,
             mapData: { ...parseMapData(mapData, covidData) }
           });
-          notifyCovidUpdates(delta);
+          notifyCovidUpdates(delta.deltaList);
         } else{
           this.setState({
             covidData,
@@ -94,13 +94,13 @@ class MapVisualiserContainer extends React.Component {
           </Navbar>
          
           <Row>
-          <Col  md="auto">
+          <Col  md="5">
             <Row>
               <Col md="auto">
               <span className=".user-help-info">Tap on the States to view State-Wise Cases!</span>
               </Col>
             </Row>
-            <Row><Col md="auto">
+            <Row><Col md="12">
             <MapVisualiser
                 delta={delta}
                 setTooltip={this.setTooltip}
@@ -114,14 +114,14 @@ class MapVisualiserContainer extends React.Component {
               </Col></Row>
              
             </Col>
-          <Col  md="auto">
+          <Col  md="6">
               <TabularInfo covidData={this.state.covidData} />
             </Col>
             
           
           </Row>
           <Row>
-            <Col>
+            <Col md="auto">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
             <Col></Col>
