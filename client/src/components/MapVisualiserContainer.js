@@ -24,24 +24,18 @@ class MapVisualiserContainer extends React.Component {
 
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
-    const getCOVIDData = (isDelta = false, delta = null) => {
+    const getCOVIDData = () => {
       axios.get(BASE_URL+"/covid-data").then(resp => {
-        let covidData = resp.data;
+        debugger;
+        let covidData = resp.data.totalCases;
+        const {delta} = resp.data;
         this.setState({
           covidData,
           mapData: { ...parseMapData(mapData, covidData) }
         });
-        if (isDelta) {
+        if (delta.deltaList && delta.deltaList.length>0) {
           this.setState({ delta });
           notifyCovidUpdates(delta);
-        }
-      });
-    };
-    const getCOVIDDelta = () => {
-      axios.get("/covid-data/delta").then(resp => {
-        let delta = resp.data;
-        if (delta.length > 0) {
-          getCOVIDData(true, delta);
         }
       });
     };
