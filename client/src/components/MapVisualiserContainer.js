@@ -29,13 +29,19 @@ class MapVisualiserContainer extends React.Component {
         debugger;
         let covidData = resp.data.totalCases;
         const {delta} = resp.data;
-        this.setState({
-          covidData,
-          mapData: { ...parseMapData(mapData, covidData) }
-        });
+        
         if (delta.deltaList && delta.deltaList.length>0) {
-          this.setState({ delta });
+          this.setState({
+            covidData,
+            delta : delta.deltaList,
+            mapData: { ...parseMapData(mapData, covidData) }
+          });
           notifyCovidUpdates(delta);
+        } else{
+          this.setState({
+            covidData,
+            mapData: { ...parseMapData(mapData, covidData) }
+          });
         }
       });
     };
