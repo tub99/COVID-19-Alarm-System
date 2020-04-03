@@ -36,7 +36,7 @@ class MapVisualiserContainer extends React.Component {
             delta : delta.deltaList,
             mapData: { ...parseMapData(mapData, covidData) }
           });
-          notifyCovidUpdates(delta);
+          notifyCovidUpdates(delta.deltaList);
         } else{
           this.setState({
             covidData,
