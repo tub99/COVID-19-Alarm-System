@@ -4,7 +4,7 @@ import Tooltip from "./Tooltip";
 import axios from "axios";
 import mapData from "./../assets/india.json";
 import { parseMapData } from "../utils/Dataparser";
-
+import {getDelta, storeDelta} from "../utils/Delta";
 import TabularInfo from "./TabularInfo";
 import InfoUpdate from "./InfoUpdate";
 import Container from "react-bootstrap/Container";
@@ -28,21 +28,31 @@ class MapVisualiserContainer extends React.Component {
       axios.get(BASE_URL+"/covid-data").then(resp => {
         debugger;
         let covidData = resp.data.totalCases;
-        const {delta} = resp.data;
-        
-        if (delta.deltaList && delta.deltaList.length>0) {
-          this.setState({
-            covidData,
-            delta : delta.deltaList,
-            mapData: { ...parseMapData(mapData, covidData) }
-          });
-          notifyCovidUpdates(delta.deltaList);
-        } else{
+        if(!localStorage.getItem("delta")){
+          storeDelta(covidData);
           this.setState({
             covidData,
             mapData: { ...parseMapData(mapData, covidData) }
           });
+        } else {
+          const delta = getDelta(covidData);
+          if (delta.deltaList && delta.deltaList.length>0) {
+            this.setState({
+              covidData,
+              delta : delta.deltaList,
+              mapData: { ...parseMapData(mapData, covidData) }
+            });
+            notifyCovidUpdates(delta.deltaList);
+          } else{
+            this.setState({
+              covidData,
+              mapData: { ...parseMapData(mapData, covidData) }
+            });
+          }
         }
+        
+        
+     
       });
     };
     getCOVIDData();
