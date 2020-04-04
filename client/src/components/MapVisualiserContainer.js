@@ -18,7 +18,8 @@ class MapVisualiserContainer extends React.Component {
     this.state = {
       mapData: {},
       covidData: [],
-      delta: []
+      delta: [],
+      todayData:[]
     };
   }
 
@@ -28,11 +29,13 @@ class MapVisualiserContainer extends React.Component {
       axios.get(BASE_URL+"/covid-data").then(resp => {
         debugger;
         let covidData = resp.data.totalCases;
+         const {today} = resp.data;
         if(!localStorage.getItem("delta")){
           storeDelta(covidData);
           this.setState({
             covidData,
-            mapData: { ...parseMapData(mapData, covidData) }
+            mapData: { ...parseMapData(mapData, covidData) },
+            todayData:today
           });
         } else {
           const delta = getDelta(covidData);
@@ -40,13 +43,15 @@ class MapVisualiserContainer extends React.Component {
             this.setState({
               covidData,
               delta : delta.deltaList,
-              mapData: { ...parseMapData(mapData, covidData) }
+              mapData: { ...parseMapData(mapData, covidData) },
+              todayData:today
             });
             notifyCovidUpdates(delta.deltaList);
           } else{
             this.setState({
               covidData,
-              mapData: { ...parseMapData(mapData, covidData) }
+              mapData: { ...parseMapData(mapData, covidData) },
+              todayData:today
             });
           }
         }
@@ -125,7 +130,7 @@ class MapVisualiserContainer extends React.Component {
              
             </Col>
           <Col  md="6">
-              <TabularInfo covidData={this.state.covidData} />
+              <TabularInfo covidData={this.state.covidData} todayData={this.state.todayData} />
             </Col>
             
           
