@@ -146,9 +146,9 @@ class MapVisualiserContainer extends React.Component {
             <Col md="5">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
-            {/* <Col md="6">
-              <ComparisonChart timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
-            </Col> */}
+            <Col sm="12" md="6">
+              <ComparisonChart setTooltip={this.setTooltip} timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
+            </Col>
           </Row>
         </Container>
       </>

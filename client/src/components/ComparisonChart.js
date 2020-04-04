@@ -25,25 +25,32 @@ class ComparisonChart extends React.Component {
     }
 
     initMap(data) {
-        if(!data) return;
+        var that = this;
+        if (!data) return;
         // set the dimensions and margins of the graph
-        var margin = { top: 20, right: 80, bottom: 30, left: 50 },
-            width = document.getElementById('bar').clientWidth - margin.left - margin.right,
+        var margin = { top: 20, right: 20, bottom: 30, left: 20 },
+            width = document.getElementById('graph').clientWidth - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
+
+        if (width < 400) {
+            width = 300;
+        }
 
         // parse the date / time
         var parseTime = d3.timeParse("%d-%B-%Y");
 
         // set the ranges
-        var x = d3.scaleBand().domain(data.map(d=>d.date)).range([0, width]);
+        var x = d3.scaleBand().domain(data.map(d => d.date)).range([0, width]);
         var y = d3.scaleLinear().range([height, 0]);
 
         // define the 1st line
         var valueline = d3.line()
-            .x(function (d) { 
-                return x(d.date); })
-            .y(function (d) { 
-                return y(d.dailyconfirmed); });
+            .x(function (d) {
+                return x(d.date);
+            })
+            .y(function (d) {
+                return y(d.dailyconfirmed);
+            });
 
         // define the 2nd line
         var valueline2 = d3.line()
@@ -57,7 +64,7 @@ class ComparisonChart extends React.Component {
         // append the svg obgect to the body of the page
         // appends a 'group' element to 'svg'
         // moves the 'group' element to the top left margin
-        var svg = d3.select("#bar").append("svg")
+        var svg = d3.select("#graph").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -93,6 +100,7 @@ class ComparisonChart extends React.Component {
             .attr("class", "line")
             .style("stroke", "#cae075")
             .attr("d", valueline);
+            
 
         // Add the valueline2 path.
         svg.append("path")
@@ -100,6 +108,7 @@ class ComparisonChart extends React.Component {
             .attr("class", "line")
             .style("stroke", "red")
             .attr("d", valueline2);
+           
 
         svg.append("path")
             .data([data])
@@ -109,18 +118,20 @@ class ComparisonChart extends React.Component {
 
         // Add the X Axis
         svg.append("g")
+            .attr('class', 'axis-x')
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
 
         // Add the Y Axis
         svg.append("g")
+            .attr('class', 'axis-y')
             .call(d3.axisLeft(y));
 
     }
 
     render() {
         return (
-            <div id="bar" style={{ backgroundColor: 'black', color: 'wheat', marginLeft: '2%' }} className="fadeInUp"></div>
+            <div id="graph" style={{ backgroundColor: 'black', color: 'wheat', marginLeft: '2%' }} className="fadeInUp"></div>
         );
     }
 
