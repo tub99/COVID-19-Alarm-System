@@ -118,3 +118,12 @@ svg path {
   color: white;
   background: grey;
 }
+
+/* graph css*/
+#graph .axis-x path , #graph .axis-y path{
+  stroke: #eee;
+}
+
+#graph .line{
+  stroke-width: 2;
+}
