@@ -30,7 +30,7 @@ class MapVisualiserContainer extends React.Component {
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get(BASE_URL + "/covid-data").then(resp => {
+      axios.get(BASE_URL+"/covid-data").then(resp => {
         
         let covidData = resp.data.totalCases;
         const { delta } = resp.data;
@@ -71,10 +71,10 @@ class MapVisualiserContainer extends React.Component {
     getCOVIDData();
     //polling on updates
     const deltaPollDuration = 1800000;
-    setInterval(() => {
-      //getCOVIDDelta();
-      getCOVIDData();
-    }, deltaPollDuration);
+    // setInterval(() => {
+    //   //getCOVIDDelta();
+    //   getCOVIDData();
+    // }, deltaPollDuration);
   }
 
   prepareTooltipBody(tooltipData) {
@@ -146,9 +146,9 @@ class MapVisualiserContainer extends React.Component {
             <Col md="5">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
-            <Col md="6">
+            {/* <Col md="6">
               <ComparisonChart timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
       </>
