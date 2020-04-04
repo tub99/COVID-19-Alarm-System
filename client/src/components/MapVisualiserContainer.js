@@ -5,6 +5,7 @@ import axios from "axios";
 import mapData from "./../assets/india.json";
 import { parseMapData } from "../utils/Dataparser";
 import ComparisonChart from "./ComparisonChart";
+import { getDelta, storeDelta } from "../utils/Delta";
 import TabularInfo from "./TabularInfo";
 import InfoUpdate from "./InfoUpdate";
 import Container from "react-bootstrap/Container";
@@ -21,7 +22,8 @@ class MapVisualiserContainer extends React.Component {
       mapData: {},
       covidData: [],
       delta: [],
-      timeSeriesData: []
+      timeSeriesData: [],
+      todayData: []
     };
   }
 
@@ -29,25 +31,41 @@ class MapVisualiserContainer extends React.Component {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
       axios.get(BASE_URL + "/covid-data").then(resp => {
-        debugger;
+        
         let covidData = resp.data.totalCases;
         const { delta } = resp.data;
+        const { today } = resp.data;
 
-        if (delta.deltaList && delta.deltaList.length > 0) {
+        if (!localStorage.getItem("delta")) {
+          storeDelta(covidData);
           this.setState({
             covidData,
-            delta: delta.deltaList,
             mapData: { ...parseMapData(mapData, covidData) },
+            todayData: today,
             timeSeriesData: resp.data.timeAnalysis
           });
-          notifyCovidUpdates(delta.deltaList);
         } else {
-          this.setState({
-            covidData,
-            mapData: { ...parseMapData(mapData, covidData) },
-            timeSeriesData: resp.data.timeAnalysis
-          });
+          const delta = getDelta(covidData);
+          if (delta.deltaList && delta.deltaList.length > 0) {
+            this.setState({
+              covidData,
+              delta: delta.deltaList,
+              mapData: { ...parseMapData(mapData, covidData) },
+              todayData: today,
+              timeSeriesData: resp.data.timeAnalysis
+            });
+            notifyCovidUpdates(delta.deltaList);
+          } else {
+            this.setState({
+              covidData,
+              mapData: { ...parseMapData(mapData, covidData) },
+              todayData: today,
+              timeSeriesData: resp.data.timeAnalysis
+            });
+          }
         }
+
+
       });
     };
     getCOVIDData();
@@ -120,9 +138,8 @@ class MapVisualiserContainer extends React.Component {
 
             </Col>
             <Col md="6">
-              <TabularInfo covidData={this.state.covidData} />
+              <TabularInfo covidData={this.state.covidData} todayData={this.state.todayData} />
             </Col>
-
 
           </Row>
           <Row>

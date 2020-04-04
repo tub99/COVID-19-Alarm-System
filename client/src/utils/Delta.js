@@ -1,43 +1,49 @@
-function StateMap() {
-  this.deltaMap = {};
+const getCurrentDT = () => {
+    var currentdate = new Date();
+    var datetime =
+      "Last Sync: " +
+      currentdate.getDate() +
+      "/" +
+      (currentdate.getMonth() + 1) +
+      "/" +
+      currentdate.getFullYear() +
+      " @ " +
+      currentdate.getHours() +
+      ":" +
+      currentdate.getMinutes() +
+      ":" +
+      currentdate.getSeconds();
 
-  const initMap = state => {
-    if (!this.deltaMap[state]) {
-      this.deltaMap[state] = {
-        current: {}
-      };
+    return datetime;
+  };
+
+const storeDelta = (currentData) =>{
+    const delta = {
+        updatedAt: getCurrentDT(),
+        deltaList: currentData
     }
-  };
-  this.getStateList = stateData => {
-    return stateData.map(data => {
-      const {
-        state,
-        confirmed,
-        deaths,
-        recovered,
-        lastupdatedtime,
-        delta
-      } = data;
-      if (!this.deltaMap[state]) {
-        this.deltaMap[state] = {
-          current: {},
-          prev: {}
-        };
-        this.deltaMap[state]["prev"] = delta;
-      }
+    localStorage.setItem('delta',JSON.stringify(delta));
+}
 
-      return {
-        state,
-        confirmed,
-        deaths,
-        recovered,
-        lastupdatedtime
-      };
-    });
-  };
+const getDelta = (currentData) => {
 
- 
-  this.findDelta = (stateWiseData, deltaList) => {
+    //get previous delta  
+    const storeData = JSON.parse(localStorage.getItem('delta'));
+    //store Current Delta
+    const delta = {
+        updatedAt: getCurrentDT(),
+        deltaList: currentData
+    }
+    localStorage.setItem('delta',JSON.stringify(delta));
+    const updatedDiff = findDelta(currentData, storeData.deltaList);
+    const deltaList = updatedDiff.filter(delta=> delta.isChanged);
+    return {
+        lastUpdate: storeData.updatedAt,
+        deltaList
+    }
+
+}
+const findDelta = (stateWiseData, deltaList) => {
     const updateDeltaList = [];
     const getDeltaStateWise = (current, prev) => {
       let isConfirmed = current.confirmed - prev.confirmed;
@@ -82,19 +88,5 @@ function StateMap() {
     return updateDeltaList;
   };
 
-  this.getTodayData = (stateData)=>{
-    return stateData.map(s=>{
-      const {deltaconfirmed, deltadeaths, deltarecovered, state} = s;
-      return {
-        state,
-        confirmed: deltaconfirmed,
-        deaths: deltadeaths,
-        recovered: deltarecovered
-      };
 
-    })
-  }
-
-}
-
-module.exports = new StateMap();
+export { getDelta, storeDelta};

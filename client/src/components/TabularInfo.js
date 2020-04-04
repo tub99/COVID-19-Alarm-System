@@ -9,10 +9,8 @@ import axios from "axios";
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 const TabularInfo = props => {
-  const BASE_URL = "http://localhost:3030";
-  const { covidData } = props;
+  const { covidData, todayData } = props;
   const [tabularData, setTabularData] = useState([]);
-  console.log(covidData, tabularData);
   useEffect(() => {
     setTabularData(covidData);
   }, [covidData]);
@@ -22,10 +20,7 @@ const TabularInfo = props => {
     if (eventKey === "1") {
       setTabularData(covidData);
     } else if (eventKey === "2") {
-      axios.get("/covid-data/today").then(resp => {
-        let covidData = resp.data;
-        setTabularData(covidData);
-      });
+      setTabularData(todayData);
     }
   };
 
@@ -40,9 +35,8 @@ const TabularInfo = props => {
               title="Total Cases"
             ></Tab>
              
-           
-            {/* <Tab eventKey="2" className="covid-table-tabs" title="Today's Cases">
-            </Tab> */}
+            <Tab eventKey="2" className="covid-table-tabs" title="Today's Cases">
+            </Tab>
           </Tabs>
         </Col>
       </Row>
