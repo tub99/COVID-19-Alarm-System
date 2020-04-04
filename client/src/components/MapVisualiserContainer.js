@@ -12,7 +12,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
-import { notifyCovidUpdates } from "../utils/Notifier";
+import { notifyCovidUpdates,notifyAboutCovidUpdates } from "../utils/Notifier";
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 
 class MapVisualiserContainer extends React.Component {
@@ -54,7 +56,8 @@ class MapVisualiserContainer extends React.Component {
               todayData: today,
               timeSeriesData: resp.data.timeAnalysis
             });
-            notifyCovidUpdates(delta.deltaList);
+            // notifyCovidUpdates(delta.deltaList);
+            notifyAboutCovidUpdates();
           } else {
             this.setState({
               covidData,
@@ -151,6 +154,7 @@ class MapVisualiserContainer extends React.Component {
             </Col>
           </Row>
         </Container>
+        <NotificationContainer/>
       </>
     );
   }

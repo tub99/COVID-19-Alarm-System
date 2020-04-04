@@ -1,3 +1,4 @@
+import { NotificationManager } from 'react-notifications';
 const notifyCovidUpdates = (data) => {
     let covidDelta = [...data];
     covidDelta.shift();
@@ -29,4 +30,9 @@ function notifyMe(text, audioPath) {
         });
     }
 }
-export { notifyCovidUpdates };
+
+const notifyAboutCovidUpdates = () => {
+    NotificationManager.info("New updates available! \n\n scroll to the notifcation section for more details")
+}
+
+export { notifyCovidUpdates, notifyAboutCovidUpdates };
