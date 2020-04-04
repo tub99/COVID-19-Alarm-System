@@ -32,12 +32,11 @@ const getDelta = (currentData) => {
     //store Current Delta
     const delta = {
         updatedAt: getCurrentDT(),
-        deltaList: storeData.deltaList
+        deltaList: currentData
     }
     localStorage.setItem('delta',JSON.stringify(delta));
     const updatedDiff = findDelta(currentData, storeData.deltaList);
     const deltaList = updatedDiff.filter(delta=> delta.isChanged);
-    debugger;
     return {
         lastUpdate: storeData.updatedAt,
         deltaList
@@ -45,7 +44,6 @@ const getDelta = (currentData) => {
 
 }
 const findDelta = (stateWiseData, deltaList) => {
-    debugger;
     const updateDeltaList = [];
     const getDeltaStateWise = (current, prev) => {
       let isConfirmed = current.confirmed - prev.confirmed;
