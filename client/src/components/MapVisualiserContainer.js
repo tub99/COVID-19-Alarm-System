@@ -14,7 +14,7 @@ import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
 import { notifyCovidUpdates,notifyAboutCovidUpdates, notifyDeviceRegistrations } from "../utils/Notifier";
 import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 
 class MapVisualiserContainer extends React.Component {
@@ -99,6 +99,15 @@ class MapVisualiserContainer extends React.Component {
   };
 
   prepareTooltipBody(tooltipData) {
+    if (tooltipData.type == 'multiline-chart') {
+      return (
+        <>
+          <h6>{tooltipData.name} : {tooltipData.value}</h6>
+          {/* <p>{tooltipData.value}</p> */}
+          {/* <p>{tooltipData.date}</p> */}
+        </>
+      )
+    }
     return (
       <>
         <h6>
@@ -150,12 +159,12 @@ class MapVisualiserContainer extends React.Component {
             <Col md="5">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
-            {/* <Col sm="12" md="6">
+            <Col sm="12" md="6">
               <ComparisonChart setTooltip={this.setTooltip} timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
-            </Col> */}
+            </Col>
           </Row>
         </Container>
-        <NotificationContainer/>
+        <NotificationContainer />
       </>
     );
   }

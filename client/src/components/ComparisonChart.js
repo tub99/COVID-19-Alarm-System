@@ -28,19 +28,24 @@ class ComparisonChart extends React.Component {
         var that = this;
         if (!data) return;
         // set the dimensions and margins of the graph
-        var margin = { top: 20, right: 20, bottom: 30, left: 20 },
+        var margin = { top: 20, right: 20, bottom: 30, left: 30 },
             width = document.getElementById('graph').clientWidth - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
         if (width < 400) {
             width = 300;
+            height = 400;
         }
 
         // parse the date / time
         var parseTime = d3.timeParse("%d-%B-%Y");
 
         // set the ranges
-        var x = d3.scaleBand().domain(data.map(d => d.date)).range([0, width]);
+        var x = d3.scalePoint()
+            .rangeRound([0, width])
+            .domain(data.map(d => d.date))
+            .padding(0.5);
+        //d3.scaleBand().domain(data.map(d => d.date)).range([0, width]);
         var y = d3.scaleLinear().range([height, 0]);
 
         // define the 1st line
@@ -78,43 +83,116 @@ class ComparisonChart extends React.Component {
             d.dailydeceased = +d.dailydeceased;
             d.dailyrecovered = +d.dailyrecovered;
         });
-        const confirmedList = data.map(d => {
-            return d.dailyconfirmed;
-        });
 
         // Scale the range of the data
-        // x.domain(data.map((d)=>d.date));
-
         y.domain([
-            // [Math.min.apply(this, confirmedList) || 0, Math.max.apply(this, confirmedList)
-            d3.min(data, function (d) {
-                return Math.min(d.dailyconfirmed, d.dailydeceased, d.dailyrecovered);
-            }), d3.max(data, function (d) {
+            0, d3.max(data, function (d) {
                 return Math.max(d.dailyconfirmed, d.dailydeceased, d.dailyrecovered);
             })
         ]);
 
+        var gline1 = svg.append("g")
         // Add the valueline path.
-        svg.append("path")
+        gline1.append("path")
             .data([data])
             .attr("class", "line")
             .style("stroke", "#cae075")
             .attr("d", valueline);
-            
+        gline1.selectAll("line-circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "data-circle")
+            .attr("r", 4)
+            .style('fill', '#17a2b8')
+            .attr("cx", function (d) { return x(d.date); })
+            .attr("cy", function (d) { return y(d.dailyconfirmed); })
+            .on('mouseenter', function (d) {
+                that.setTooltip({
+                    name: 'confirmed',
+                    date: d.date,
+                    value: d.dailyconfirmed,
+                    style: { left: window.event.pageX, top: window.event.pageY - 120, opacity: 1 },
+                    type: 'multiline-chart'
+                });
 
+            })
+            .on('mouseleave', function (d) {
+                that.setTooltip({
+                    date: d.date,
+                    value: d.dailyconfirmed,
+                    style: { left: window.event.pageX, top: window.event.pageY - 128, opacity: 0 },
+                    type: 'multiline-chart'
+                });
+            });
+
+        var gLine2 = svg.append("g")
         // Add the valueline2 path.
-        svg.append("path")
+        gLine2.append("path")
             .data([data])
             .attr("class", "line")
             .style("stroke", "red")
             .attr("d", valueline2);
-           
+        gLine2.selectAll("line-circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "data-circle")
+            .attr("r", 4)
+            .style('fill', '#17a2b8')
+            .attr("cx", function (d) { return x(d.date); })
+            .attr("cy", function (d) { return y(d.dailyrecovered); })
+            .on('mouseenter', function (d) {
+                that.setTooltip({
+                    name: 'recovered',
+                    date: d.date,
+                    value: d.dailyrecovered,
+                    style: { left: window.event.pageX, top: window.event.pageY - 120, opacity: 1 },
+                    type: 'multiline-chart'
+                });
 
-        svg.append("path")
+            })
+            .on('mouseleave', function (d) {
+                that.setTooltip({
+                    date: d.date,
+                    value: d.dailyrecovered,
+                    style: { left: window.event.pageX, top: window.event.pageY - 128, opacity: 0 },
+                    type: 'multiline-chart'
+                });
+            });
+        var gLine3 = svg.append("g")
+        gLine3.append("path")
             .data([data])
             .attr("class", "line")
             .style("stroke", "green")
             .attr("d", valueline3);
+        gLine3.selectAll("line-circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "data-circle")
+            .attr("r", 4)
+            .style('fill', '#17a2b8')
+            .attr("cx", function (d) { return x(d.date); })
+            .attr("cy", function (d) { return y(d.dailydeceased); })
+            .on('mouseenter', function (d) {
+                that.setTooltip({
+                    name: 'deaths',
+                    date: d.date,
+                    value: d.dailydeceased,
+                    style: { left: window.event.pageX, top: window.event.pageY - 110, opacity: 1 },
+                    type: 'multiline-chart'
+                });
+
+            })
+            .on('mouseleave', function (d) {
+                that.setTooltip({
+                    date: d.date,
+                    value: d.dailydeceased,
+                    style: { left: window.event.pageX, top: window.event.pageY - 128, opacity: 0 },
+                    type: 'multiline-chart'
+                });
+            });
 
         // Add the X Axis
         svg.append("g")
@@ -126,12 +204,14 @@ class ComparisonChart extends React.Component {
         svg.append("g")
             .attr('class', 'axis-y')
             .call(d3.axisLeft(y));
-
     }
 
+    setTooltip(tooltipData) {
+        this.props.setTooltip(tooltipData);
+    }
     render() {
         return (
-            <div id="graph" style={{ backgroundColor: 'black', color: 'wheat', marginLeft: '2%' }} className="fadeInUp"></div>
+            <div id="graph" style={{ backgroundColor: '#454d55', color: 'wheat', marginLeft: '2%', height: '500px', marginBottom: '5%' }} className="fadeInUp"></div>
         );
     }
 

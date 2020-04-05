@@ -41,7 +41,8 @@ div.tooltip {
   pointer-events: none;
   transition: 0.2s all ease;
   opacity: 0.5;
-  border: 0px
+  border: 0px;
+  min-width:99px
 }
 
 svg path {
@@ -125,5 +126,11 @@ svg path {
 }
 
 #graph .line{
+  stroke-width: 2;
+  fill: transparent;
+}
+
+#graph .data-circle{
+  stroke: #000;
   stroke-width: 2;
 }
