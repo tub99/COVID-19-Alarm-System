@@ -12,7 +12,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
-import { notifyCovidUpdates, notifyAboutCovidUpdates } from "../utils/Notifier";
+import { notifyCovidUpdates,notifyAboutCovidUpdates, notifyDeviceRegistrations } from "../utils/Notifier";
 import 'react-notifications/lib/notifications.css';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 
@@ -32,13 +32,14 @@ class MapVisualiserContainer extends React.Component {
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get(BASE_URL + "/covid-data").then(resp => {
-
+      axios.get(BASE_URL+"/covid-data").then(resp => {
+        
         let covidData = resp.data.totalCases;
         const { delta } = resp.data;
         const { today } = resp.data;
 
         if (!localStorage.getItem("delta")) {
+          notifyDeviceRegistrations();
           storeDelta(covidData);
           this.setState({
             covidData,
@@ -74,10 +75,10 @@ class MapVisualiserContainer extends React.Component {
     getCOVIDData();
     //polling on updates
     const deltaPollDuration = 1800000;
-    setInterval(() => {
-      //getCOVIDDelta();
-      getCOVIDData();
-    }, deltaPollDuration);
+    // setInterval(() => {
+    //   //getCOVIDDelta();
+    //   getCOVIDData();
+    // }, deltaPollDuration);
   }
 
   prepareTooltipBody(tooltipData) {
@@ -125,7 +126,7 @@ class MapVisualiserContainer extends React.Component {
       <>
         <Container fluid>
           <Navbar bg="light" variant="light">
-            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>COVID-19 Alarm System</h5>
+            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>COVID-19 Notification System</h5>
           </Navbar>
 
           <Row>
