@@ -4,9 +4,22 @@ const router = express.Router();
 const StateMap = require("./../services/stateMap");
 const MongoWrapper = require("./../services/db");
 
-const getLastSevenDayData = (timeSeriesData) => {
+const getLastSevenDayData = (timeSeriesData, today) => {
   const len = timeSeriesData.length;
-  return timeSeriesData.slice(len - 7);
+  let timeData = [];
+   timeData = timeSeriesData.slice(len - 6);
+   const {deltaconfirmed,deltadeaths, deltarecovered } = today;
+   const todayDate = new Date();
+   let todayDay = todayDate.getUTCDate();
+   todayDay = (todayDay <=9) ? '0'+todayDay : todayDay;
+   const todaysData =  {
+    "dailyconfirmed": deltaconfirmed,
+    "dailydeceased": deltadeaths,
+    "dailyrecovered": deltarecovered,
+    "date": todayDay+' '+ todayDate.toLocaleString('default', { month: 'long' })
+  };
+  timeData.push(todaysData);
+  return timeData;
 };
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -17,7 +30,7 @@ router.get("/", function (req, res, next) {
       let stateList = response.data.statewise;
       const todaysData = StateMap.getTodayData(stateList);
       const { cases_time_series } = response.data;
-      const timeAnalysis = getLastSevenDayData(cases_time_series);
+      const timeAnalysis = getLastSevenDayData(cases_time_series, stateList[0]);
       const stateWiseData = StateMap.getStateList(stateList);
       const apiResponse = { totalCases: stateWiseData, delta: {}, timeAnalysis, today: todaysData };
       res.send(apiResponse);
