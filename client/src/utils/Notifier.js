@@ -32,7 +32,12 @@ function notifyMe(text, audioPath) {
 }
 
 const notifyAboutCovidUpdates = () => {
-    NotificationManager.info("New updates available! \n\n scroll to the notifcation section for more details")
+    NotificationManager.info("New updates available! \n\n Check for Map highlight updates. \n\n Scroll to the Notifcation section for more details")
 }
 
-export { notifyCovidUpdates, notifyAboutCovidUpdates };
+const notifyDeviceRegistrations = () => {
+    NotificationManager.info("Application synced! \n\n Get regular updates by refreshing page!")
+
+}
+
+export { notifyCovidUpdates, notifyAboutCovidUpdates, notifyDeviceRegistrations };

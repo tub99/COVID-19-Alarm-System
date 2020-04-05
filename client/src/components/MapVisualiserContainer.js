@@ -12,7 +12,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
-import { notifyCovidUpdates,notifyAboutCovidUpdates } from "../utils/Notifier";
+import { notifyCovidUpdates,notifyAboutCovidUpdates, notifyDeviceRegistrations } from "../utils/Notifier";
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
@@ -32,13 +32,14 @@ class MapVisualiserContainer extends React.Component {
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get(BASE_URL+"/covid-data").then(resp => {
+      axios.get("/covid-data").then(resp => {
         
         let covidData = resp.data.totalCases;
         const { delta } = resp.data;
         const { today } = resp.data;
 
         if (!localStorage.getItem("delta")) {
+          notifyDeviceRegistrations();
           storeDelta(covidData);
           this.setState({
             covidData,
@@ -116,7 +117,7 @@ class MapVisualiserContainer extends React.Component {
       <>
         <Container fluid>
           <Navbar bg="light" variant="light">
-            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>COVID-19 Alarm System</h5>
+            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>COVID-19 Notification System</h5>
           </Navbar>
 
           <Row>
@@ -149,9 +150,9 @@ class MapVisualiserContainer extends React.Component {
             <Col md="5">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
-            <Col sm="12" md="6">
+            {/* <Col sm="12" md="6">
               <ComparisonChart setTooltip={this.setTooltip} timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
         <NotificationContainer/>
