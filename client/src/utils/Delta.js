@@ -76,7 +76,7 @@ const findDelta = (stateWiseData, deltaList) => {
       }
     };
 
-    const isAnyUpdate = getDeltaStateWise(stateWiseData[0], deltaList[0]);
+    const isAnyUpdate = getDeltaStateWise(stateWiseData.length && stateWiseData[0] || {}, deltaList[0]);
     if (isAnyUpdate) {
       for(const [i, deltaState] of deltaList.entries()) {
         const current = stateWiseData[i];
