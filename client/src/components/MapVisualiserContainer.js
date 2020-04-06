@@ -12,10 +12,16 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navbar from "react-bootstrap/Navbar";
-import { notifyCovidUpdates,notifyAboutCovidUpdates, notifyDeviceRegistrations } from "../utils/Notifier";
-import 'react-notifications/lib/notifications.css';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-
+import {
+  notifyCovidUpdates,
+  notifyAboutCovidUpdates,
+  notifyDeviceRegistrations,
+} from "../utils/Notifier";
+import "react-notifications/lib/notifications.css";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 
 class MapVisualiserContainer extends React.Component {
   constructor() {
@@ -25,17 +31,15 @@ class MapVisualiserContainer extends React.Component {
       covidData: [],
       delta: [],
       timeSeriesData: [],
-      todayData: []
+      todayData: [],
     };
   }
 
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get(BASE_URL+"/covid-data").then(resp => {
-        
+      axios.get( "/covid-data").then((resp) => {
         let covidData = resp.data.totalCases;
-        const { delta } = resp.data;
         const { today } = resp.data;
 
         if (!localStorage.getItem("delta")) {
@@ -45,17 +49,20 @@ class MapVisualiserContainer extends React.Component {
             covidData,
             mapData: { ...parseMapData(mapData, covidData) },
             todayData: today,
-            timeSeriesData: resp.data.timeAnalysis
+            timeSeriesData: resp.data.timeAnalysis,
           });
         } else {
-          const delta = getDelta(covidData);
+          const delta = {
+            updated: "",
+            deltaList: [],
+          }; //getDelta(covidData);
           if (delta.deltaList && delta.deltaList.length > 0) {
             this.setState({
               covidData,
               delta: delta.deltaList,
               mapData: { ...parseMapData(mapData, covidData) },
               todayData: today,
-              timeSeriesData: resp.data.timeAnalysis
+              timeSeriesData: resp.data.timeAnalysis,
             });
             // notifyCovidUpdates(delta.deltaList);
             notifyAboutCovidUpdates();
@@ -64,12 +71,10 @@ class MapVisualiserContainer extends React.Component {
               covidData,
               mapData: { ...parseMapData(mapData, covidData) },
               todayData: today,
-              timeSeriesData: resp.data.timeAnalysis
+              timeSeriesData: resp.data.timeAnalysis,
             });
           }
         }
-
-
       });
     };
     getCOVIDData();
@@ -94,19 +99,21 @@ class MapVisualiserContainer extends React.Component {
       </>
     );
   }
-  setTooltip = tooltipData => {
+  setTooltip = (tooltipData) => {
     this.setState({ tooltipData });
   };
 
   prepareTooltipBody(tooltipData) {
-    if (tooltipData.type == 'multiline-chart') {
+    if (tooltipData.type == "multiline-chart") {
       return (
         <>
-          <h6>{tooltipData.name} : {tooltipData.value}</h6>
+          <h6>
+            {tooltipData.name} : {tooltipData.value}
+          </h6>
           {/* <p>{tooltipData.value}</p> */}
           {/* <p>{tooltipData.date}</p> */}
         </>
-      )
+      );
     }
     return (
       <>
@@ -126,41 +133,51 @@ class MapVisualiserContainer extends React.Component {
       <>
         <Container fluid>
           <Navbar bg="light" variant="light">
-            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>COVID-19 Notification System</h5>
+            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>
+              COVID-19 Notification System
+            </h5>
           </Navbar>
 
           <Row>
             <Col md="5">
               <Row>
                 <Col md="auto">
-                  <span className=".user-help-info">Tap on the States to view State-Wise Cases!</span>
+                  <span className=".user-help-info">
+                    Tap on the States to view State-Wise Cases!
+                  </span>
                 </Col>
               </Row>
-              <Row><Col md="12">
-                <MapVisualiser
-                  delta={delta}
-                  setTooltip={this.setTooltip}
-                  mapData={mapData}
-                />
-                {tooltipData && (
-                  <Tooltip style={tooltipData.style}>
-                    {this.prepareTooltipBody(tooltipData)}
-                  </Tooltip>
-                )}
-              </Col></Row>
-
+              <Row>
+                <Col md="12">
+                  <MapVisualiser
+                    delta={delta}
+                    setTooltip={this.setTooltip}
+                    mapData={mapData}
+                  />
+                  {tooltipData && (
+                    <Tooltip style={tooltipData.style}>
+                      {this.prepareTooltipBody(tooltipData)}
+                    </Tooltip>
+                  )}
+                </Col>
+              </Row>
             </Col>
             <Col md="6">
-              <TabularInfo covidData={this.state.covidData} todayData={this.state.todayData} />
+              <TabularInfo
+                covidData={this.state.covidData}
+                todayData={this.state.todayData}
+              />
             </Col>
-
           </Row>
           <Row>
             <Col md="5">
               <InfoUpdate info={this.state.delta}></InfoUpdate>
             </Col>
             <Col sm="12" md="6">
-              <ComparisonChart setTooltip={this.setTooltip} timeSeriesData={this.state.timeSeriesData}></ComparisonChart>
+              <ComparisonChart
+                setTooltip={this.setTooltip}
+                timeSeriesData={this.state.timeSeriesData}
+              ></ComparisonChart>
             </Col>
           </Row>
         </Container>

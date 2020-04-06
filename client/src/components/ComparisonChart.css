@@ -1,0 +1,17 @@
+.comparison-container, .comparison-legend{
+    background-color:#454d55;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.death-label{
+    color: rgb(230, 67, 8);
+}
+
+.confirmed-label{
+    color: rgb(220, 220, 17)
+}
+
+.rec-label{
+color: rgb(30, 228, 30)
+}

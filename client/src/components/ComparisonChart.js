@@ -1,5 +1,5 @@
 import React from "react";
-
+import './ComparisonChart.css';
 var d3 = Object.assign(
   {},
   require("d3"),
@@ -11,7 +11,7 @@ class ComparisonChart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timeSeriesData: {},
+      timeSeriesData: [],
     };
   }
   componentDidMount() {
@@ -30,7 +30,7 @@ class ComparisonChart extends React.Component {
     var that = this;
     if (!data) return;
     // set the dimensions and margins of the graph
-    var margin = { top: 20, right: 20, bottom: 30, left: 30 },
+    var margin = { top: 20, right: 10, bottom: 30, left: 30 },
       width =
         document.getElementById("graph").clientWidth -
         margin.left -
@@ -89,8 +89,8 @@ class ComparisonChart extends React.Component {
     var svg = d3
       .select("#graph")
       .append("svg")
-      .attr("width", width + 10+ margin.left + margin.right)
-      .attr("height", height + 15 +margin.top + margin.bottom)
+      .attr("width", width + 10 + margin.left + margin.right)
+      .attr("height", height + 15 + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -112,7 +112,7 @@ class ComparisonChart extends React.Component {
 
     var gline1 = svg.append("g");
     // Add the valueline path.
-  
+
     gline1
       .append("path")
       .data([data])
@@ -139,7 +139,7 @@ class ComparisonChart extends React.Component {
           date: d.date,
           value: d.dailyconfirmed,
           style: {
-            left: window.event.pageX-50,
+            left: window.event.pageX - 50,
             top: window.event.pageY - 80,
             opacity: 1,
           },
@@ -187,8 +187,8 @@ class ComparisonChart extends React.Component {
           date: d.date,
           value: d.dailyrecovered,
           style: {
-            left: window.event.pageX,
-            top: window.event.pageY - 120,
+            left: window.event.pageX - 50,
+            top: window.event.pageY - 80,
             opacity: 1,
           },
           type: "multiline-chart",
@@ -233,8 +233,8 @@ class ComparisonChart extends React.Component {
           date: d.date,
           value: d.dailydeceased,
           style: {
-            left: window.event.pageX,
-            top: window.event.pageY - 110,
+            left: window.event.pageX - 50,
+            top: window.event.pageY - 80,
             opacity: 1,
           },
           type: "multiline-chart",
@@ -272,17 +272,29 @@ class ComparisonChart extends React.Component {
   }
   render() {
     return (
-      <div
-        id="graph"
-        style={{
-          backgroundColor: "#454d55",
-          color: "wheat",
-          marginLeft: "2%",
-          height: "400px",
-          marginBottom: "5%",
-        }}
-        className="fadeInUp"
-      ></div>
+      <>
+        <div className="comparison-container">
+          <div className="comparison-label">
+            <span>Last 7 days Comparison</span>
+          </div>
+         
+        </div>
+        <div
+          id="graph"
+          style={{
+            backgroundColor: "#454d55",
+            color: "wheat",
+            height: "430px",
+            marginBottom: "5%",
+          }}
+          className="fadeInUp"
+        ></div>
+         <div className="comparison-legend">
+            <span className="death-label">Death: Red </span>
+            <span className="confirmed-label">Confirmed: Yellow </span>
+            <span className="rec-label">Recovered: Green </span>
+          </div>
+      </>
     );
   }
 }
