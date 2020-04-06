@@ -38,43 +38,49 @@ class MapVisualiserContainer extends React.Component {
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get( "/covid-data").then((resp) => {
+      axios.get(BASE_URL+"/covid-data").then((resp) => {
         let covidData = resp.data.totalCases;
         const { today } = resp.data;
+        this.setState({
+          covidData,
+          mapData: { ...parseMapData(mapData, covidData) },
+          todayData: today,
+          timeSeriesData: resp.data.timeAnalysis,
+        });
 
-        if (!localStorage.getItem("delta")) {
-          notifyDeviceRegistrations();
-          storeDelta(covidData);
-          this.setState({
-            covidData,
-            mapData: { ...parseMapData(mapData, covidData) },
-            todayData: today,
-            timeSeriesData: resp.data.timeAnalysis,
-          });
-        } else {
-          const delta = {
-            updated: "",
-            deltaList: [],
-          }; //getDelta(covidData);
-          if (delta.deltaList && delta.deltaList.length > 0) {
-            this.setState({
-              covidData,
-              delta: delta.deltaList,
-              mapData: { ...parseMapData(mapData, covidData) },
-              todayData: today,
-              timeSeriesData: resp.data.timeAnalysis,
-            });
-            // notifyCovidUpdates(delta.deltaList);
-            notifyAboutCovidUpdates();
-          } else {
-            this.setState({
-              covidData,
-              mapData: { ...parseMapData(mapData, covidData) },
-              todayData: today,
-              timeSeriesData: resp.data.timeAnalysis,
-            });
-          }
-        }
+        // if (!localStorage.getItem("delta")) {
+        //   notifyDeviceRegistrations();
+        //   storeDelta(covidData);
+        //   this.setState({
+        //     covidData,
+        //     mapData: { ...parseMapData(mapData, covidData) },
+        //     todayData: today,
+        //     timeSeriesData: resp.data.timeAnalysis,
+        //   });
+        // } else {
+        //   const delta = {
+        //     updated: "",
+        //     deltaList: [],
+        //   }; //getDelta(covidData);
+        //   if (delta.deltaList && delta.deltaList.length > 0) {
+        //     this.setState({
+        //       covidData,
+        //       delta: delta.deltaList,
+        //       mapData: { ...parseMapData(mapData, covidData) },
+        //       todayData: today,
+        //       timeSeriesData: resp.data.timeAnalysis,
+        //     });
+        //     // notifyCovidUpdates(delta.deltaList);
+        //     notifyAboutCovidUpdates();
+        //   } else {
+        //     this.setState({
+        //       covidData,
+        //       mapData: { ...parseMapData(mapData, covidData) },
+        //       todayData: today,
+        //       timeSeriesData: resp.data.timeAnalysis,
+        //     });
+        //   }
+        // }
       });
     };
     getCOVIDData();
