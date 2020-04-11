@@ -6,28 +6,49 @@ var d3 = Object.assign(
   require("d3-geo"),
   require("d3-queue")
 );
+const GraphType = {
+  ALL: 'All',
+  DECEASED: 'deceased',
+  CONFIRMED: 'confirmed',
+  RECOVERED: 'recovered'
+}
+const colorMap = {
+  'confirmed': { lineColor: '#cae075', anchorColor: '#17a2b8' },
+  'recovered': { lineColor: 'green', anchorColor: '#17a2b8' },
+  'deceased': { lineColor: 'red', anchorColor: '#17a2b8' }
+}
 
 class ComparisonChart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       timeSeriesData: [],
+      graphType: GraphType.ALL
     };
   }
   componentDidMount() {
     const { mapData } = this.props;
-    this.initMap(mapData);
+    this.initGraph(mapData, this.state.GraphType);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state.timeSeriesData !== nextProps.timeSeriesData) {
       this.setState({ timeSeriesData: nextProps.timeSeriesData });
-      this.initMap(nextProps.timeSeriesData);
+      this.initGraph(nextProps.timeSeriesData);
     }
   }
 
-  initMap(data) {
-    var that = this;
+  shouldComponentUpdate(nextProps, nextState){
+    
+    return this.state.graphType !== nextState.graphType || this.state.timeSeriesData !== nextState.timeSeriesData;
+  }
+  componentDidUpdate() {
+    
+    const {timeSeriesData,graphType}= this.state;
+    this.initGraph(timeSeriesData,graphType);
+  }
+  initGraph(data, type) {
+    var that = this, lineData = [];
     if (!data) return;
     // set the dimensions and margins of the graph
     var margin = { top: 20, right: 10, bottom: 30, left: 30 },
@@ -41,7 +62,6 @@ class ComparisonChart extends React.Component {
       width = 300;
       height = 300;
     }
-
     // parse the date / time
     var parseTime = d3.timeParse("%d-%B-%Y");
 
@@ -54,38 +74,10 @@ class ComparisonChart extends React.Component {
     //d3.scaleBand().domain(data.map(d => d.date)).range([0, width]);
     var y = d3.scaleLinear().range([height, 0]);
 
-    // define the 1st line
-    var valueline = d3
-      .line()
-      .x(function (d) {
-        return x(d.date);
-      })
-      .y(function (d) {
-        return y(d.dailyconfirmed);
-      });
-
-    // define the 2nd line
-    var valueline2 = d3
-      .line()
-      .x(function (d) {
-        return x(d.date);
-      })
-      .y(function (d) {
-        return y(d.dailydeceased);
-      });
-
-    var valueline3 = d3
-      .line()
-      .x(function (d) {
-        return x(d.date);
-      })
-      .y(function (d) {
-        return y(d.dailyrecovered);
-      });
-
     // append the svg obgect to the body of the page
     // appends a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
+    d3.select("#graph svg").remove(); //clear DOM before re-init 
     var svg = d3
       .select("#graph")
       .append("svg")
@@ -102,156 +94,65 @@ class ComparisonChart extends React.Component {
       d.dailyrecovered = +d.dailyrecovered;
     });
 
-    // Scale the range of the data
-    y.domain([
-      0,
-      d3.max(data, function (d) {
-        return Math.max(d.dailyconfirmed, d.dailydeceased, d.dailyrecovered);
-      }),
-    ]);
+    //generate graph lines according to graph type
+    switch (type) {
 
-    var gline1 = svg.append("g");
-    // Add the valueline path.
+      case GraphType.CONFIRMED:
+        lineData = data.map((d) => {
+          return { date: d.date, value: d.dailyconfirmed, text: GraphType.CONFIRMED }
+        });
+        y.domain([
+          0,
+          d3.max(data, function (d) {
+            return Math.max(d.dailyconfirmed);
+          }),
+        ]);
+        this.generateLine(svg, [...lineData], x, y, colorMap[type].lineColor, colorMap[type].anchorColor)
+        break;
 
-    gline1
-      .append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "#cae075")
-      .attr("d", valueline);
-    gline1
-      .selectAll("line-circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "data-circle")
-      .attr("r", 4)
-      .style("fill", "#17a2b8")
-      .attr("cx", function (d) {
-        return x(d.date);
-      })
-      .attr("cy", function (d) {
-        return y(d.dailyconfirmed);
-      })
-      .on("mouseenter", function (d) {
-        that.setTooltip({
-          name: "confirmed",
-          date: d.date,
-          value: d.dailyconfirmed,
-          style: {
-            left: window.event.pageX - 50,
-            top: window.event.pageY - 80,
-            opacity: 1,
-          },
-          type: "multiline-chart",
+      case GraphType.DECEASED:
+        lineData = data.map((d) => {
+          return { date: d.date, value: d.dailydeceased, text: GraphType.DECEASED }
         });
-      })
-      .on("mouseleave", function (d) {
-        that.setTooltip({
-          date: d.date,
-          value: d.dailyconfirmed,
-          style: {
-            left: window.event.pageX,
-            top: window.event.pageY - 128,
-            opacity: 0,
-          },
-          type: "multiline-chart",
-        });
-      });
+        y.domain([
+          0,
+          d3.max(data, function (d) {
+            return Math.max(d.dailydeceased);
+          }),
+        ]);
+        this.generateLine(svg, [...lineData], x, y, colorMap[type].lineColor, colorMap[type].anchorColor)
+        break;
 
-    var gLine2 = svg.append("g");
-    // Add the valueline2 path.
-    gLine2
-      .append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "red")
-      .attr("d", valueline2);
-    gLine2
-      .selectAll("line-circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "data-circle")
-      .attr("r", 4)
-      .style("fill", "#17a2b8")
-      .attr("cx", function (d) {
-        return x(d.date);
-      })
-      .attr("cy", function (d) {
-        return y(d.dailyrecovered);
-      })
-      .on("mouseenter", function (d) {
-        that.setTooltip({
-          name: "recovered",
-          date: d.date,
-          value: d.dailyrecovered,
-          style: {
-            left: window.event.pageX - 50,
-            top: window.event.pageY - 80,
-            opacity: 1,
-          },
-          type: "multiline-chart",
+      case GraphType.RECOVERED:
+        lineData = data.map((d) => {
+          return { date: d.date, value: d.dailyrecovered, text: GraphType.RECOVERED }
         });
-      })
-      .on("mouseleave", function (d) {
-        that.setTooltip({
-          date: d.date,
-          value: d.dailyrecovered,
-          style: {
-            left: window.event.pageX,
-            top: window.event.pageY - 128,
-            opacity: 0,
-          },
-          type: "multiline-chart",
-        });
-      });
-    var gLine3 = svg.append("g");
-    gLine3
-      .append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "green")
-      .attr("d", valueline3);
-    gLine3
-      .selectAll("line-circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("class", "data-circle")
-      .attr("r", 4)
-      .style("fill", "#17a2b8")
-      .attr("cx", function (d) {
-        return x(d.date);
-      })
-      .attr("cy", function (d) {
-        return y(d.dailydeceased);
-      })
-      .on("mouseenter", function (d) {
-        that.setTooltip({
-          name: "deaths",
-          date: d.date,
-          value: d.dailydeceased,
-          style: {
-            left: window.event.pageX - 50,
-            top: window.event.pageY - 80,
-            opacity: 1,
-          },
-          type: "multiline-chart",
-        });
-      })
-      .on("mouseleave", function (d) {
-        that.setTooltip({
-          date: d.date,
-          value: d.dailydeceased,
-          style: {
-            left: window.event.pageX,
-            top: window.event.pageY - 128,
-            opacity: 0,
-          },
-          type: "multiline-chart",
-        });
-      });
+        y.domain([
+          0,
+          d3.max(data, function (d) {
+            return Math.max(d.dailyrecovered);
+          }),
+        ]);
+        this.generateLine(svg, [...lineData], x, y, colorMap[type].lineColor, colorMap[type].anchorColor)
+        break;
+      case GraphType.ALL:
+      default:
+        for (let i in GraphType) {
+          if (GraphType[i] == 'All') continue;
+
+          lineData = data.map((d) => {
+            return { date: d.date, value: d['daily' + GraphType[i]], text: GraphType[i] }
+          });
+          y.domain([
+            0,
+            d3.max(data, function (d) {
+              return Math.max(d.dailyconfirmed, d.dailydeceased, d.dailyrecovered);
+            }),
+          ]);
+          this.generateLine(svg, [...lineData], x, y, colorMap[GraphType[i]].lineColor, colorMap[GraphType[i]].anchorColor)
+        }
+
+    }
 
     // Add the X Axis
     svg
@@ -267,8 +168,73 @@ class ComparisonChart extends React.Component {
     svg.append("g").attr("class", "axis-y").call(d3.axisLeft(y));
   }
 
+  generateLine(svg, data, x, y, lineColor, anchorColor) {
+    var that = this,
+      valueline = d3
+        .line()
+        .x(function (d) {
+          return x(d.date);
+        })
+        .y(function (d) {
+          return y(d.value);
+        });
+
+    var gLine = svg.append("g");
+    gLine
+      .append("path")
+      .data([data])
+      .attr("class", "line")
+      .style("stroke", lineColor)
+      .attr("d", valueline);
+    gLine
+      .selectAll("line-circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "data-circle")
+      .attr("r", 4)
+      .style("fill", anchorColor)
+      .attr("cx", function (d) {
+        return x(d.date);
+      })
+      .attr("cy", function (d) {
+        return y(d.value);
+      })
+      .on("mouseout", function (d) {
+        that.setTooltip({
+          date: d.date,
+          value: d.value,
+          style: {
+            left: window.event.pageX,
+            top: window.event.pageY - 128,
+            opacity: 0,
+          },
+          type: "multiline-chart",
+        });
+      })
+      .on("mouseenter", function (d) {
+        that.setTooltip({
+          name: d.text,
+          date: d.date,
+          value: d.value,
+          style: {
+            left: window.event.pageX - 50,
+            top: window.event.pageY - 60,
+            opacity: 1,
+          },
+          type: "multiline-chart",
+        });
+      })
+      
+
+  }
+
   setTooltip(tooltipData) {
     this.props.setTooltip(tooltipData);
+  }
+
+  setGraphType = (type) => {
+    this.setState({ graphType: type })
   }
   render() {
     return (
@@ -277,7 +243,7 @@ class ComparisonChart extends React.Component {
           <div className="comparison-label">
             <span>Last 7 days Comparison</span>
           </div>
-         
+
         </div>
         <div
           id="graph"
@@ -289,11 +255,12 @@ class ComparisonChart extends React.Component {
           }}
           className="fadeInUp"
         ></div>
-         <div className="comparison-legend">
-            <span className="death-label">Death: Red </span>
-            <span className="confirmed-label">Confirmed: Yellow </span>
-            <span className="rec-label">Recovered: Green </span>
-          </div>
+        <div className="comparison-legend">
+          <span title='click to see all data' className="all-label" onClick={() => this.setGraphType(GraphType.ALL)}>All </span>
+          <span title='click to see only deceased cases' className="death-label" onClick={() => this.setGraphType(GraphType.DECEASED)}>Death: Red </span>
+          <span title='click to see only confirmed data' className="confirmed-label" onClick={() => this.setGraphType(GraphType.CONFIRMED)}>Confirmed: Yellow </span>
+          <span title='click to see only recovery data' className="rec-label" onClick={() => this.setGraphType(GraphType.RECOVERED)}>Recovered: Green </span>
+        </div>
       </>
     );
   }
