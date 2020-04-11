@@ -38,8 +38,12 @@ class ComparisonChart extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState){
+    
+    return this.state.graphType !== nextState.graphType || this.state.timeSeriesData !== nextState.timeSeriesData;
+  }
   componentDidUpdate() {
-    console.log(this.state);
+    
     const {timeSeriesData,graphType}= this.state;
     this.initGraph(timeSeriesData,graphType);
   }
@@ -196,20 +200,7 @@ class ComparisonChart extends React.Component {
       .attr("cy", function (d) {
         return y(d.value);
       })
-      .on("mouseenter", function (d) {
-        that.setTooltip({
-          name: d.text,
-          date: d.date,
-          value: d.value,
-          style: {
-            left: window.event.pageX - 50,
-            top: window.event.pageY - 80,
-            opacity: 1,
-          },
-          type: "multiline-chart",
-        });
-      })
-      .on("mouseleave", function (d) {
+      .on("mouseout", function (d) {
         that.setTooltip({
           date: d.date,
           value: d.value,
@@ -220,7 +211,21 @@ class ComparisonChart extends React.Component {
           },
           type: "multiline-chart",
         });
-      });
+      })
+      .on("mouseenter", function (d) {
+        that.setTooltip({
+          name: d.text,
+          date: d.date,
+          value: d.value,
+          style: {
+            left: window.event.pageX - 50,
+            top: window.event.pageY - 60,
+            opacity: 1,
+          },
+          type: "multiline-chart",
+        });
+      })
+      
 
   }
 
