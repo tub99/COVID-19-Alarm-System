@@ -3,3 +3,4 @@
 /client/package-lock.json
 /client/yarn.lock
 /client/build
+/node_modules
