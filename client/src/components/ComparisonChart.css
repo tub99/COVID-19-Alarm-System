@@ -4,9 +4,13 @@
     border-radius: 5px;
     margin-bottom: 10px;
 }
-.comparison-legend span{
+.comparison-legend button{
+    border-radius: 8px;
     padding: 0 1%;
     cursor: pointer;
+    background-color: black;
+    border: 1px solid white;
+    margin-right: 8px;
 }
 .death-label{
     color: rgb(230, 67, 8);

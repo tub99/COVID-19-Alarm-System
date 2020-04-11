@@ -256,10 +256,10 @@ class ComparisonChart extends React.Component {
           className="fadeInUp"
         ></div>
         <div className="comparison-legend">
-          <span title='click to see all data' className="all-label" onClick={() => this.setGraphType(GraphType.ALL)}>All </span>
-          <span title='click to see only deceased cases' className="death-label" onClick={() => this.setGraphType(GraphType.DECEASED)}>Death: Red </span>
-          <span title='click to see only confirmed data' className="confirmed-label" onClick={() => this.setGraphType(GraphType.CONFIRMED)}>Confirmed: Yellow </span>
-          <span title='click to see only recovery data' className="rec-label" onClick={() => this.setGraphType(GraphType.RECOVERED)}>Recovered: Green </span>
+          <button title='click to see all data' className="all-label" onClick={() => this.setGraphType(GraphType.ALL)}>All </button>
+          <button title='click to see only deceased cases' className="death-label" onClick={() => this.setGraphType(GraphType.DECEASED)}>Death: Red </button>
+          <button title='click to see only confirmed data' className="confirmed-label" onClick={() => this.setGraphType(GraphType.CONFIRMED)}>Confirmed: Yellow </button>
+          <button title='click to see only recovery data' className="rec-label" onClick={() => this.setGraphType(GraphType.RECOVERED)}>Rec: Green </button>
         </div>
       </>
     );
