@@ -93,11 +93,11 @@ const deltaStore = () =>{
     });
 } 
 // added a timeout because of the HERUKU error. 
-MongoWrapper.init((data) => {
-  console.log('DB initialized', data);
-  setTimeout(() => {
-    deltaStore();
-  }, 10000);
-});
+// MongoWrapper.init((data) => {
+//   console.log('DB initialized', data);
+//   setTimeout(() => {
+//     deltaStore();
+//   }, 10000);
+// });
 
 module.exports = app;

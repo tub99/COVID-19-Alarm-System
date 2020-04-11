@@ -43,7 +43,7 @@ class MapVisualiserContainer extends React.Component {
         const { today } = resp.data;
         const {delta} = resp.data;
         ////////////////////////////////
-        if (delta.deltaList && delta.deltaList.length > 0) {
+        if (delta && delta.deltaList && delta.deltaList.length > 0) {
           this.setState({
             covidData,
             delta: delta.deltaList,
