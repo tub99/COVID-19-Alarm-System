@@ -37,11 +37,7 @@ function MongoWrapper() {
 
   this.storeDelta = function(stateList, cb) {
     const stateWiseData = StateMap.getStateList(stateList);
-    const delta = {
-      type: "delta",
-      updatedAt: getCurrentDT(),
-      deltaList: stateWiseData
-    };
+    
     const deltaCollection = this.db.collection("delta");
     deltaCollection.findOne({ type: "delta" }, (err, item) => {
       if (err) {
@@ -49,21 +45,34 @@ function MongoWrapper() {
         cb(err, null);
       }
       if (!item) {
+        const stateDeltaMap = StateMap.initDelta(stateWiseData);
+        const delta = {
+          type: "delta",
+          updatedAt: getCurrentDT(),
+          deltaMap: stateDeltaMap
+        };
         deltaCollection.save(delta, { w: 1 }, (err, result) => {
           if (err) cb(err, null);
           cb(null, result);
         });
       } else {
-        const { deltaList } = item;
-        const deltaDiff = StateMap.findDelta(stateWiseData, deltaList);
-        const toUpdateDoc = { deltaList: deltaDiff, updatedAt: getCurrentDT() }
-        if (deltaDiff.length > 0) {
+        const { deltaMap } = item;
+        const deltaDiff = StateMap.findDelta(stateWiseData, deltaMap);
+        const toUpdateDoc = { deltaMap: deltaDiff, updatedAt: getCurrentDT() }
+        if (deltaDiff["Total"]["isChanged"]) {
           deltaCollection.update(
             { type: "delta" },
             { $set: toUpdateDoc },
             (err, res) => {
-              if (err) cb(err, null);
-              cb(null,toUpdateDoc);
+              if (err){
+                console.log('No Updates happened')
+                cb(err, null);
+              } 
+              else{
+                console.log('New Updates Happened', res);
+                cb(null,toUpdateDoc);
+              }
+             
             }
           );
         } else {
