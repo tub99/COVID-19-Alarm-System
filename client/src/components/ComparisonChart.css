@@ -3,6 +3,9 @@
     font-weight: bold;
     border-radius: 5px;
     margin-bottom: 10px;
+    padding: 1%;
+    display:flex;
+    justify-content:center;
 }
 .comparison-legend button{
     border-radius: 8px;
