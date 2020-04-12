@@ -23,7 +23,7 @@ app.use(cors(corsOptions));
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "build")));
@@ -32,12 +32,12 @@ app.use("/", indexRouter);
 app.use("/covid-data", covidRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -69,35 +69,38 @@ const getCurrentDT = () => {
 // store delta
 /**
  * Connect to MongoDB.
- * 
+ *
  */
 
-const deltaStore = () =>{
+const deltaStore = () => {
   axios
     .get("https://api.covid19india.org/data.json")
-    .then(function(response) {
+    .then(function (response) {
       // handle success
       let stateList = response.data.statewise;
 
-      
+
       MongoWrapper.storeDelta(stateList,
         (err, data) => {
           if (err) console.log(err);
           if (data) console.log("Store Success", data);
-          if(!err && !data) console.log('No updates happened');
+          if (!err && !data) console.log('No updates happened');
         });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // handle error
       console.log(error);
     });
-} 
-// added a timeout because of the HERUKU error. 
-// MongoWrapper.init((data) => {
-//   console.log('DB initialized', data);
-//   setTimeout(() => {
-//     deltaStore();
-//   }, 10000);
-// });
+};
+
+console.log(`\t APP.js loaded.`);
+
+// added a timeout because of the HERUKU error.
+MongoWrapper.init((data) => {
+  console.log('DB initialized');
+  setTimeout(() => {
+    deltaStore();
+  }, 10000);
+});
 
 module.exports = app;

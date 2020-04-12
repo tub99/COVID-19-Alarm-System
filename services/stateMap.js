@@ -8,6 +8,7 @@ function StateMap() {
       };
     }
   };
+
   this.getStateList = (stateData) => {
     return stateData.map((data) => {
       const {
@@ -46,7 +47,7 @@ function StateMap() {
       isConfirmed = isConfirmed < 0 ? 0 : isConfirmed;
       isDead = isDead < 0 ? 0 : isDead;
       isRecovered = isRecovered < 0 ? 0 : isRecovered;
-      const { state } = current;
+      const {state} = current;
       if (state === "Total" && !(isConfirmed || isDead || isRecovered)) {
         return null;
       }
@@ -71,7 +72,7 @@ function StateMap() {
 
     const isAnyUpdate = getDeltaStateWise(stateWiseData[0], deltaMap["Total"]);
     if (isAnyUpdate) {
-      for (const [i,stateData] of stateWiseData.entries()) {
+      for (const [i, stateData] of stateWiseData.entries()) {
         const {state} = stateData;
         const current = stateWiseData[i];
         const prev = deltaMap[state];
@@ -87,19 +88,19 @@ function StateMap() {
     return updateDeltaMap;
   };
 
-  this.getFilteredDeltaList = (deltaMap)=>{
+  this.getFilteredDeltaList = (deltaMap) => {
     const deltaList = [];
     for (const deltaKey in deltaMap) {
-      if(deltaMap[deltaKey]["isChanged"]){
+      if (deltaMap[deltaKey]["isChanged"]) {
         deltaList.push(deltaMap[deltaKey]);
       }
     }
     return deltaList;
-  }
+  };
 
   this.getTodayData = (stateData) => {
     return stateData.map((s) => {
-      const { deltaconfirmed, deltadeaths, deltarecovered, state } = s;
+      const {deltaconfirmed, deltadeaths, deltarecovered, state} = s;
       return {
         state,
         confirmed: deltaconfirmed,
@@ -109,11 +110,18 @@ function StateMap() {
     });
   };
 
+  this.getDelta = function () {
+
+    return {
+      "delta": "mockDelta"
+    }
+  };
+
   this.initDelta = (stateWiseData) => {
     let stateMap = {};
     stateWiseData.forEach((data) => {
-      const { state, confirmed, deaths, recovered, lastupdatedtime } = data;
-      if(!stateMap[state]){
+      const {state, confirmed, deaths, recovered, lastupdatedtime} = data;
+      if (!stateMap[state]) {
         stateMap[state] = {
           state,
           confirmed,
