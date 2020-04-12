@@ -8,8 +8,9 @@
     justify-content:center;
 }
 .comparison-legend button{
-    border-radius: 8px;
-    padding: 0 1%;
+   
+    padding-left: 2px;
+    padding-right:2px;
     cursor: pointer;
     background-color: black;
     border: 1px solid white;
