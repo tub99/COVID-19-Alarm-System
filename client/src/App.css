@@ -42,7 +42,7 @@ div.tooltip {
     transition: 0.2s all ease;
     opacity: 0.5;
     border: 0px;
-    min-width: 99px
+    min-width:99px
 }
 
 svg path {
@@ -93,47 +93,46 @@ svg path {
     color: #ffe4c4;
 }
 
-.dark-theme {
+.dark-theme{
     background-color: #282c34;
     color: white;
 }
 
-.covid-stats-table-container .table-responsive {
+.covid-stats-table-container .table-responsive{
     height: 73.5vh;
     margin-bottom: 5%;
     overflow: auto;
 }
-
-.covid-stats-table-container .table-responsive table {
+.covid-stats-table-container .table-responsive table{
     margin-bottom: 0;
 }
 
-.info-updates {
+.info-updates{
     height: 10vh;
     margin-bottom: 5%;
     overflow: auto;
 }
 
-.header-info {
+.header-info{
     color: black;
 }
 
-.user-help-info {
+.user-help-info{
     color: white;
     background: grey;
 }
 
 /* graph css*/
-#graph .axis-x path, #graph .axis-y path {
+#graph .axis-x path , #graph .axis-y path{
     stroke: #eee;
 }
 
-#graph .line {
+#graph .line{
     stroke-width: 2;
     fill: transparent;
 }
 
-#graph .data-circle {
+#graph .data-circle{
     stroke: #000;
     stroke-width: 2;
 }
