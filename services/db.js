@@ -59,8 +59,8 @@ function MongoWrapper() {
 
     let lastData = this.db.dataHistory[dbHistoryRows - 1];
 
-    if (JSON.stringify(stateList) !== JSON.stringify(lastData)) {
-      this.db.dataHistory.push(stateList);
+    if (!dbHistoryRows || JSON.stringify(stateList) !== JSON.stringify(lastData)) {
+      this.db.dataHistory.push(JSON.parse(JSON.stringify(stateList)));
     }
 
     if (!deltaCollection) {
