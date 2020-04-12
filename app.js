@@ -9,15 +9,10 @@ require('dotenv').config();
 var indexRouter = require("./routes/index");
 var covidRouter = require("./routes/covid");
 
-const useMock = process.env.USE_MOCK;
 const portNum = process.env.PORT;
 
-console.log(`useMock = ${!!useMock}`);
-
-let covidApiURL = useMock ? 'http://localhost:4500/covid-data-init' : 'https://api.covid19india.org/data.json';
-
 const MongoWrapper = require("./services/db");
-const axios = require("axios");
+const fetcher = require('./services/api-fetcher');
 
 var app = express();
 var cors = require("cors");
@@ -95,8 +90,8 @@ const deltaStore = () => {
 
   console.log(`Handling deltaStore`);
 
-  axios
-    .get(covidApiURL)
+  fetcher
+    .getCovidData()
     .then(function (response) {
       // handle success
       let stateList = response.data.statewise;

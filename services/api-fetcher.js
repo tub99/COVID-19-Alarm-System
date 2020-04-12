@@ -1,91 +1,48 @@
 const axios = require("axios");
+const useMock = process.env.USE_MOCK;
+const fetchGap = process.env.FETCH_GAP;
 
+console.log(`useMock = ${!!useMock}`);
+
+let covidApiURL = useMock ? 'http://localhost:4500/covid-data' : 'https://api.covid19india.org/data.json';
 
 let lastFetchTime = Date.now();
-let lastFetchData = false;
-let isFetching = true;
 let fetchPromise = null;
 
-let all = [];
-let expects = [];
-
-
-function getPromise(someStr) {
+function getPromise() {
 
   if (!fetchPromise) {
     fetchPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        lastFetchTime = Date.now();
-        resolve(someStr);
-      }, 100);
+      axios.get(covidApiURL).then(function (response) {
+        console.log(`\t [fetcher] Fresh Data fetched.`);
+        resolve(response);
+      })
     });
+  } else {
+    console.log(`\t [fetcher] Cached data sent.`);
   }
   return fetchPromise;
 }
 
-function getCovidData(id) {
+
+function getCovidData() {
 
   var dn = Date.now();
 
-  console.log(`dn - lastFetch =  ${dn - lastFetchTime}`);
+  let gapNow = dn - lastFetchTime;
 
-  if (dn > (3000 + lastFetchTime)) {
+  let dTime = fetchGap - gapNow;
+
+  console.log(`\t [fetcher] time to next refresh = ${dTime / 1000} seconds`);
+
+  if (dTime < 0) {
+    console.log(`\t [fetcher] Reset time reached. Will get fresh response`);
     lastFetchTime = dn;
     fetchPromise = null;
+  } else {
   }
 
-  getPromise(id).then(function (data) {
-    all.push(data);
-  });
+  return getPromise()
 }
 
-function getDataTest() {
-
-
-  getCovidData('TEST1-0');
-  getCovidData('TEST2-0');
-  getCovidData('TEST3-0');
-
-  expects.push('TEST1-0');
-  expects.push('TEST1-0');
-  expects.push('TEST1-0');
-
-  setTimeout(function () {
-    console.log('Timeout 500');
-
-    getCovidData('TEST1-500');
-    getCovidData('TEST2-500');
-    getCovidData('TEST3-500');
-
-    expects.push('TEST1-0');
-    expects.push('TEST1-0');
-    expects.push('TEST1-0');
-
-  }, 500);
-
-  setTimeout(function () {
-    console.log('Timeout 3500');
-    getCovidData('TEST1-3500');
-    getCovidData('TEST2-3500');
-    getCovidData('TEST3-3500');
-    expects.push('TEST1-3500');
-    expects.push('TEST1-3500');
-    expects.push('TEST1-3500');
-  }, 3500);
-
-  setTimeout(function () {
-    console.log('Timeout 5000');
-    getCovidData('TEST1-5000');
-    getCovidData('TEST2-5000');
-    getCovidData('TEST3-5000');
-
-    expects.push('TEST1-3500');
-    expects.push('TEST1-3500');
-    expects.push('TEST1-3500');
-    require('fs').writeFileSync('./responses.json', JSON.stringify({all, expects}, null, 2));
-    console.log('Data written');
-  }, 5000);
-
-}
-
-getDataTest();
+module.exports.getCovidData = getCovidData;
