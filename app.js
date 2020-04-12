@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var covidRouter = require("./routes/covid");
 
 const useMock = process.env.USE_MOCK;
+const portNum = process.env.PORT;
 
 console.log(`useMock = ${!!useMock}`);
 
@@ -25,7 +26,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: `http://localhost:${portNum}`,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
