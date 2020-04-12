@@ -3,9 +3,18 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require('dotenv').config();
+
 
 var indexRouter = require("./routes/index");
 var covidRouter = require("./routes/covid");
+
+const useMock = process.env.USE_MOCK;
+
+console.log(`useMock = ${!!useMock}`);
+
+let covidApiURL = useMock ? 'http://localhost:4500/covid-data-init' : 'https://api.covid19india.org/data.json';
+
 const MongoWrapper = require("./services/db");
 const axios = require("axios");
 
@@ -73,8 +82,11 @@ const getCurrentDT = () => {
  */
 
 const deltaStore = () => {
+
+  console.log(`Handling deltaStore`);
+
   axios
-    .get("https://api.covid19india.org/data.json")
+    .get(covidApiURL)
     .then(function (response) {
       // handle success
       let stateList = response.data.statewise;
@@ -82,25 +94,26 @@ const deltaStore = () => {
 
       MongoWrapper.storeDelta(stateList,
         (err, data) => {
-          if (err) console.log(err);
-          if (data) console.log("Store Success", data);
+          if (err) console.error('storeDelta error', err);
+          if (data) console.log("Store Success");
           if (!err && !data) console.log('No updates happened');
         });
     })
     .catch(function (error) {
       // handle error
-      console.log(error);
+      console.error('deltaStore axios', error);
     });
 };
 
-console.log(`\t APP.js loaded.`);
-
 // added a timeout because of the HERUKU error.
 MongoWrapper.init((data) => {
-  console.log('DB initialized');
+  console.log('\t DB initialized');
   setTimeout(() => {
+    console.log('\t\t DB initialized');
     deltaStore();
-  }, 10000);
+  }, 1000);
 });
+
+console.log(`APP.js loaded.`);
 
 module.exports = app;

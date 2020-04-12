@@ -110,13 +110,6 @@ function StateMap() {
     });
   };
 
-  this.getDelta = function () {
-
-    return {
-      "delta": "mockDelta"
-    }
-  };
-
   this.initDelta = (stateWiseData) => {
     let stateMap = {};
     stateWiseData.forEach((data) => {

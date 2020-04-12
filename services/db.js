@@ -3,7 +3,6 @@ const StateMap = require("./stateMap");
 
 const localMongoURI = 'mongodb://127.0.0.1:27017';
 
-
 const Constants = {
   MONGODB_URI: localMongoURI
 };
@@ -43,12 +42,15 @@ function MongoWrapper() {
     const stateWiseData = StateMap.getStateList(stateList);
 
     const deltaCollection = this.db.collection("delta");
+
     deltaCollection.findOne({type: "delta"}, (err, item) => {
       if (err) {
-        console.error('storeDelta', err);
+        console.error('MongoWrapper.storeDelta', err);
         cb(err, null);
       }
+
       if (!item) {
+        console.log('\t DB Has NO Delta yet.');
         const stateDeltaMap = StateMap.initDelta(stateWiseData);
         const delta = {
           type: "delta",
@@ -60,19 +62,24 @@ function MongoWrapper() {
           cb(null, result);
         });
       } else {
+        console.log('\t DB HAS Delta');
+
         const {deltaMap} = item;
+
         const deltaDiff = StateMap.findDelta(stateWiseData, deltaMap);
-        const toUpdateDoc = {deltaMap: deltaDiff, updatedAt: getCurrentDT()}
+
+        const toUpdateDoc = {deltaMap: deltaDiff, updatedAt: getCurrentDT()};
+
         if (deltaDiff["Total"]["isChanged"]) {
           deltaCollection.update(
             {type: "delta"},
             {$set: toUpdateDoc},
             (err, res) => {
               if (err) {
-                console.error('No Updates happened');
+                console.error('\t No Updates happened');
                 cb(err, null);
               } else {
-                console.log('New Updates Happened', res);
+                console.log('\t New Updates Happened');
                 cb(null, toUpdateDoc);
               }
 
