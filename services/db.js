@@ -1,11 +1,9 @@
-const MongoClient = require("mongodb").MongoClient;
 const StateMap = require("./stateMap");
 require('dotenv').config();
 
-const Constants = {
-  MONGODB_URI: process.env.DB_URI
-};
+const fs = require('fs');
 
+const dbFilePath = './database.json';
 
 const getCurrentDT = () => {
   var currentdate = new Date();
@@ -27,80 +25,80 @@ const getCurrentDT = () => {
 
 function MongoWrapper() {
   this.db = null;
+
+  this.syncFromFile = function () {
+    if (fs.existsSync(dbFilePath)) {
+      //Not using require to prevent concurrent instances to corrupt.
+      this.db = JSON.parse(fs.readFileSync(dbFilePath, 'utf-8'));
+    }
+  };
+
+  this.syncToFile = function () {
+    fs.writeFileSync(dbFilePath, JSON.stringify(this.db, null, 2));
+  };
+
   this.init = cb => {
-    const uri = Constants.MONGODB_URI;
-    const client = new MongoClient(uri, {useNewUrlParser: true});
-    client.connect(err => {
-      console.log("DB connected");
-      this.db = client.db("covid_db");
-      cb(true);
-    });
+
+    this.db = {
+      dataHistory: [],
+      delta: null
+    };
+
+    this.syncFromFile();
+
+    cb(true);
   };
 
   this.storeDelta = function (stateList, cb) {
     const stateWiseData = StateMap.getStateList(stateList);
+    const deltaCollection = this.db.delta;
 
-    const deltaCollection = this.db.collection("delta");
+    let dbHistoryRows = this.db.dataHistory.length;
 
-    deltaCollection.findOne({type: "delta"}, (err, item) => {
-      if (err) {
-        console.error('MongoWrapper.storeDelta', err);
-        cb(err, null);
-      }
+    console.log(`\t\t\t dbHistoryRows = ${dbHistoryRows}`);
 
-      if (!item) {
-        console.log('\t DB Has NO Delta yet.');
-        const stateDeltaMap = StateMap.initDelta(stateWiseData);
-        const delta = {
-          type: "delta",
-          updatedAt: getCurrentDT(),
-          deltaMap: stateDeltaMap
-        };
-        deltaCollection.save(delta, {w: 1}, (err, result) => {
-          if (err) cb(err, null);
-          cb(null, result);
-        });
+    let lastData = this.db.dataHistory[dbHistoryRows - 1];
+
+    if (JSON.stringify(stateList) !== JSON.stringify(lastData)) {
+      this.db.dataHistory.push(stateList);
+    }
+
+    if (!deltaCollection) {
+      console.log('\t DB Has NO Delta yet.');
+      const stateDeltaMap = StateMap.initDelta(stateWiseData);
+
+      this.db.delta = {
+        type: "delta",
+        updatedAt: getCurrentDT(),
+        deltaMap: stateDeltaMap
+      };
+
+
+    } else {
+      console.log('\t DB HAS Delta');
+
+      const {deltaMap} = deltaCollection;
+
+      const deltaDiff = StateMap.findDelta(stateWiseData, deltaMap);
+
+      const toUpdateDoc = {deltaMap: deltaDiff, updatedAt: getCurrentDT()};
+
+      if (deltaDiff["Total"]["isChanged"]) {
+        deltaCollection.deltaMap = toUpdateDoc.deltaMap;
+        deltaCollection.updatedAt = toUpdateDoc.updatedAt;
+        this.syncToFile();
+        cb(null, toUpdateDoc);
       } else {
-        console.log('\t DB HAS Delta');
-
-        const {deltaMap} = item;
-
-        const deltaDiff = StateMap.findDelta(stateWiseData, deltaMap);
-
-        const toUpdateDoc = {deltaMap: deltaDiff, updatedAt: getCurrentDT()};
-
-        if (deltaDiff["Total"]["isChanged"]) {
-          deltaCollection.update(
-            {type: "delta"},
-            {$set: toUpdateDoc},
-            (err, res) => {
-              if (err) {
-                console.error('\t No Updates happened');
-                cb(err, null);
-              } else {
-                console.log('\t New Updates Happened');
-                cb(null, toUpdateDoc);
-              }
-
-            }
-          );
-        } else {
-          cb(null, null);
-
-        }
+        cb(null, null);
       }
-    });
+    }
+
+    this.syncToFile();
+
   };
 
   this.getDelta = function (cb) {
-    const deltaCollection = this.db.collection("delta");
-    deltaCollection.findOne({type: "delta"}, (err, item) => {
-      if (err) {
-        console.log(err);
-        cb(err);
-      }
-      cb(item);
-    });
+    cb(this.db.delta);
   };
 }
 
