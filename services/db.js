@@ -1,10 +1,9 @@
 const MongoClient = require("mongodb").MongoClient;
 const StateMap = require("./stateMap");
-
-const localMongoURI = 'mongodb://127.0.0.1:27017';
+require('dotenv').config();
 
 const Constants = {
-  MONGODB_URI: localMongoURI
+  MONGODB_URI: process.env.DB_URI
 };
 
 
