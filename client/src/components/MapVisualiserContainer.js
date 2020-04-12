@@ -38,7 +38,7 @@ class MapVisualiserContainer extends React.Component {
   componentDidMount() {
     const BASE_URL = "http://localhost:3030";
     const getCOVIDData = () => {
-      axios.get("/covid-data").then((resp) => {
+      axios.get(BASE_URL+"/covid-data").then((resp) => {
         let covidData = resp.data.totalCases;
         const { today } = resp.data;
         const {delta} = resp.data;
