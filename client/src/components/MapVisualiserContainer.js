@@ -3,9 +3,8 @@ import MapVisualiser from "./MapVisualiser";
 import Tooltip from "./Tooltip";
 import axios from "axios";
 import mapData from "./../assets/india.json";
-import { parseMapData } from "../utils/Dataparser";
+import {parseMapData} from "../utils/Dataparser";
 import ComparisonChart from "./ComparisonChart";
-import { getDelta, storeDelta } from "../utils/Delta";
 import TabularInfo from "./TabularInfo";
 import InfoUpdate from "./InfoUpdate";
 import Container from "react-bootstrap/Container";
@@ -36,18 +35,19 @@ class MapVisualiserContainer extends React.Component {
   }
 
   componentDidMount() {
-    const BASE_URL = "http://localhost:3030";
+
+
     const getCOVIDData = () => {
-      axios.get(BASE_URL+"/covid-data").then((resp) => {
+      axios.get("/covid-data").then((resp) => {
         let covidData = resp.data.totalCases;
-        const { today } = resp.data;
+        const {today} = resp.data;
         const {delta} = resp.data;
         ////////////////////////////////
         if (delta && delta.deltaList && delta.deltaList.length > 0) {
           this.setState({
             covidData,
             delta: delta.deltaList,
-            mapData: { ...parseMapData(mapData, covidData) },
+            mapData: {...parseMapData(mapData, covidData)},
             todayData: today,
             timeSeriesData: resp.data.timeAnalysis,
           });
@@ -56,7 +56,7 @@ class MapVisualiserContainer extends React.Component {
         } else {
           this.setState({
             covidData,
-            mapData: { ...parseMapData(mapData, covidData) },
+            mapData: {...parseMapData(mapData, covidData)},
             todayData: today,
             timeSeriesData: resp.data.timeAnalysis,
           });
@@ -73,7 +73,7 @@ class MapVisualiserContainer extends React.Component {
   }
 
   prepareTooltipBody(tooltipData) {
-    const { state, confirmed, deaths, recovered } = tooltipData;
+    const {state, confirmed, deaths, recovered} = tooltipData;
     return (
       <>
         <span>
@@ -85,8 +85,9 @@ class MapVisualiserContainer extends React.Component {
       </>
     );
   }
+
   setTooltip = (tooltipData) => {
-    this.setState({ tooltipData });
+    this.setState({tooltipData});
   };
 
   prepareTooltipBody(tooltipData) {
@@ -114,12 +115,12 @@ class MapVisualiserContainer extends React.Component {
   }
 
   render() {
-    const { mapData, tooltipData, delta } = this.state;
+    const {mapData, tooltipData, delta} = this.state;
     return (
       <>
         <Container fluid>
           <Navbar bg="light" variant="light">
-            <h5 className="header-info" style={{ fontFamily: "fantasy" }}>
+            <h5 className="header-info" style={{fontFamily: "fantasy"}}>
               COVID-19 Notification System
             </h5>
           </Navbar>
@@ -167,7 +168,7 @@ class MapVisualiserContainer extends React.Component {
             </Col>
           </Row>
         </Container>
-        <NotificationContainer />
+        <NotificationContainer/>
       </>
     );
   }

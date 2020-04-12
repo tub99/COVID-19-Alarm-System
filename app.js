@@ -35,8 +35,17 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "build")));
+
+
+let publicPath = path.join(__dirname, "public");
+let buildPath = path.join(__dirname + '/client', "build");
+
+
+console.log(`publicPath = ${publicPath}`);
+console.log(`buildPath = ${buildPath}`);
+
+app.use(express.static(publicPath));
+app.use(express.static(buildPath));
 
 app.use("/", indexRouter);
 app.use("/covid-data", covidRouter);

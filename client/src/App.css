@@ -1,136 +1,139 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 div.tooltip {
-  position: absolute;
-  text-align: center;
-  color: #fff;
-  width: auto;
-  height: auto;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: #43443f;
-  border-radius: 8px;
-  pointer-events: none;
-  transition: 0.2s all ease;
-  opacity: 0.5;
-  border: 0px;
-  min-width:99px
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    width: auto;
+    height: auto;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: #43443f;
+    border-radius: 8px;
+    pointer-events: none;
+    transition: 0.2s all ease;
+    opacity: 0.5;
+    border: 0px;
+    min-width: 99px
 }
 
 svg path {
-  stroke: #000;
-  stroke-width: 1;
+    stroke: #000;
+    stroke-width: 1;
 }
 
 .fadeInUp {
-  animation-delay: 2.1s;
-  animation-name: fadeIn;
-  animation-duration: 0.45s;
-  animation-fill-mode: both;
+    animation-delay: 2.1s;
+    animation-name: fadeIn;
+    animation-duration: 0.45s;
+    animation-fill-mode: both;
 }
 
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .covid-stats-table-container {
-  font-size: 0.9rem;
-  margin-top: 2%;
+    font-size: 0.9rem;
+    margin-top: 2%;
 }
 
 #map {
-  background-color: #454d55;
-  margin-top: 2%;
-  margin-left: 1%;
-  margin-bottom: 4%;
+    background-color: #454d55;
+}
+
+#map svg {
+    display: block;
+    margin: auto;
 }
 
 .covid-stats-table-container .nav-item {
-  color: #ffe4c4;
+    color: #ffe4c4;
 }
 
-.dark-theme{
-  background-color: #282c34;
-  color: white;
+.dark-theme {
+    background-color: #282c34;
+    color: white;
 }
 
-.covid-stats-table-container .table-responsive{
-  height: 73.5vh;
-  margin-bottom: 5%;
-  overflow: auto;
-}
-.covid-stats-table-container .table-responsive table{
-  margin-bottom: 0;
+.covid-stats-table-container .table-responsive {
+    height: 73.5vh;
+    margin-bottom: 5%;
+    overflow: auto;
 }
 
-.info-updates{
-  height: 10vh;
-  margin-bottom: 5%;
-  overflow: auto;
+.covid-stats-table-container .table-responsive table {
+    margin-bottom: 0;
 }
 
-.header-info{
-  color: black;
+.info-updates {
+    height: 10vh;
+    margin-bottom: 5%;
+    overflow: auto;
 }
 
-.user-help-info{
-  color: white;
-  background: grey;
+.header-info {
+    color: black;
+}
+
+.user-help-info {
+    color: white;
+    background: grey;
 }
 
 /* graph css*/
-#graph .axis-x path , #graph .axis-y path{
-  stroke: #eee;
+#graph .axis-x path, #graph .axis-y path {
+    stroke: #eee;
 }
 
-#graph .line{
-  stroke-width: 2;
-  fill: transparent;
+#graph .line {
+    stroke-width: 2;
+    fill: transparent;
 }
 
-#graph .data-circle{
-  stroke: #000;
-  stroke-width: 2;
+#graph .data-circle {
+    stroke: #000;
+    stroke-width: 2;
 }
