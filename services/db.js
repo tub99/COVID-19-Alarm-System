@@ -40,7 +40,6 @@ function MongoWrapper() {
   this.init = cb => {
 
     this.db = {
-      dataHistory: [],
       delta: null
     };
 
@@ -51,17 +50,10 @@ function MongoWrapper() {
 
   this.storeDelta = function (stateList, cb) {
     const stateWiseData = StateMap.getStateList(stateList);
+
+    this.syncFromFile();
+
     const deltaCollection = this.db.delta;
-
-    let dbHistoryRows = this.db.dataHistory.length;
-
-    console.log(`\t\t\t dbHistoryRows = ${dbHistoryRows}`);
-
-    let lastData = this.db.dataHistory[dbHistoryRows - 1];
-
-    if (!dbHistoryRows || JSON.stringify(stateList) !== JSON.stringify(lastData)) {
-      this.db.dataHistory.push(JSON.parse(JSON.stringify(stateList)));
-    }
 
     if (!deltaCollection) {
       console.log('\t DB Has NO Delta yet.');
