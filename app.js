@@ -3,11 +3,16 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require('dotenv').config();
+
 
 var indexRouter = require("./routes/index");
 var covidRouter = require("./routes/covid");
+
+const portNum = process.env.PORT;
+
 const MongoWrapper = require("./services/db");
-const axios = require("axios");
+const fetcher = require('./services/api-fetcher');
 
 var app = express();
 var cors = require("cors");
@@ -16,28 +21,37 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 var corsOptions = {
-  origin: "http://localhost:3000",
+  origin: `http://localhost:${portNum}`,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "build")));
+
+
+let publicPath = path.join(__dirname, "public");
+let buildPath = path.join(__dirname + '/client', "build");
+
+
+console.log(`publicPath = ${publicPath}`);
+console.log(`buildPath = ${buildPath}`);
+
+app.use(express.static(publicPath));
+app.use(express.static(buildPath));
 
 app.use("/", indexRouter);
 app.use("/covid-data", covidRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -69,35 +83,42 @@ const getCurrentDT = () => {
 // store delta
 /**
  * Connect to MongoDB.
- * 
+ *
  */
 
-const deltaStore = () =>{
-  axios
-    .get("https://api.covid19india.org/data.json")
-    .then(function(response) {
+const deltaStore = () => {
+
+  console.log(`Handling deltaStore`);
+
+  fetcher
+    .getCovidData()
+    .then(function (response) {
       // handle success
       let stateList = response.data.statewise;
 
-      
+
       MongoWrapper.storeDelta(stateList,
         (err, data) => {
-          if (err) console.log(err);
-          if (data) console.log("Store Success", data);
-          if(!err && !data) console.log('No updates happened');
+          if (err) console.error('storeDelta error', err);
+          if (data) console.log("Store Success");
+          if (!err && !data) console.log('No updates happened');
         });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       // handle error
-      console.log(error);
+      console.error('deltaStore axios', error);
     });
-} 
-// added a timeout because of the HERUKU error. 
+};
+
+// added a timeout because of the HERUKU error.
 MongoWrapper.init((data) => {
-  console.log('DB initialized', data);
+  console.log('\t DB initialized');
   setTimeout(() => {
+    console.log('\t\t DB initialized');
     deltaStore();
-  }, 10000);
+  }, 1000);
 });
+
+console.log(`APP.js loaded.`);
 
 module.exports = app;
